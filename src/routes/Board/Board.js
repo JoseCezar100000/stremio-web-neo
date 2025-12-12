@@ -10,6 +10,7 @@ const useBoard = require('./useBoard');
 const useContinueWatchingPreview = require('./useContinueWatchingPreview');
 const styles = require('./styles');
 const { default: StreamingServerWarning } = require('./StreamingServerWarning');
+const HeroShelf = require('./HeroShelf');
 
 const THRESHOLD = 5;
 
@@ -42,6 +43,24 @@ const Board = () => {
         loadBoardRows({ start, end });
     }, [boardCatalogsOffset]);
     const onScroll = React.useCallback(debounce(onVisibleRangeChange, 250), [onVisibleRangeChange]);
+    const heroItems = React.useMemo(() => {
+        const items = [];
+        board.catalogs.forEach((catalog) => {
+            if (catalog.content?.type === 'Ready' && Array.isArray(catalog.content.content)) {
+                catalog.content.content.forEach((item) => {
+                    if (item && 
+                        typeof item.background === 'string' && 
+                        item.background.length > 0 &&
+                        typeof item.logo === 'string' && 
+                        item.logo.length > 0) {
+                        items.push(item);
+                    }
+                });
+            }
+        });
+        return items.slice(0, 10); // Limit to 10 items
+    }, [board.catalogs]);
+
     React.useLayoutEffect(() => {
         onVisibleRangeChange();
     }, [board.catalogs, onVisibleRangeChange]);
@@ -50,6 +69,9 @@ const Board = () => {
             <EventModal />
             <MainNavBars className={styles['board-content-container']} route={'board'}>
                 <div ref={scrollContainerRef} className={styles['board-content']} onScroll={onScroll}>
+                    {heroItems.length > 0 && (
+                        <HeroShelf items={heroItems} />
+                    )}
                     {
                         continueWatchingPreview.items.length > 0 ?
                             <MetaRow

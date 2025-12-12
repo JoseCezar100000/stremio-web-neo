@@ -1,0 +1,150 @@
+// Copyright (C) 2017-2023 Smart code 203358507
+
+const React = require('react');
+const classnames = require('classnames');
+const { default: Image } = require('stremio/components/Image');
+const { Button } = require('stremio/components');
+const { useInterval } = require('stremio/common');
+const { default: Icon } = require('@stremio/stremio-icons/react');
+const styles = require('./styles');
+
+const HeroShelf = ({ items }) => {
+    const [currentIndex, setCurrentIndex] = React.useState(0);
+    const interval = useInterval(15000); // 15 seconds
+
+    const heroItems = React.useMemo(() => {
+        if (!Array.isArray(items) || items.length === 0) {
+            return [];
+        }
+        // Filter items that have both background and logo
+        return items
+            .filter((item) => 
+                item && 
+                typeof item.background === 'string' && 
+                item.background.length > 0 &&
+                typeof item.logo === 'string' && 
+                item.logo.length > 0
+            )
+            .slice(0, 10); // Limit to 10 items
+    }, [items]);
+
+    React.useEffect(() => {
+        if (heroItems.length > 1) {
+            const itemsLength = heroItems.length;
+            interval.start(() => {
+                setCurrentIndex((prevIndex) => (prevIndex + 1) % itemsLength);
+            });
+        } else {
+            interval.cancel();
+        }
+        return () => {
+            interval.cancel();
+        };
+    }, [heroItems.length]);
+
+    if (heroItems.length === 0) {
+        return null;
+    }
+
+    const currentItem = heroItems[currentIndex];
+
+    const renderLogoFallback = React.useCallback(() => (
+        <div className={styles['logo-placeholder']}>{currentItem.name || ''}</div>
+    ), [currentItem.name]);
+
+    return (
+        <div className={styles['hero-shelf-container']}>
+            <div className={styles['hero-shelf-wrapper']}>
+                {heroItems.map((item, index) => {
+                    const isActive = index === currentIndex;
+                    const imdbRating = item.links?.find(l => l.category === 'imdb')?.name;
+                    const year = item.releaseInfo;
+                    const runtime = item.runtime;
+                    const description = item.description;
+
+                    return (
+                        <div
+                            key={index}
+                            className={classnames(styles['hero-item'], {
+                                [styles['active']]: isActive,
+                                [styles['prev']]: index === (currentIndex - 1 + heroItems.length) % heroItems.length,
+                                [styles['next']]: index === (currentIndex + 1) % heroItems.length
+                            })}
+                        >
+                            <div className={styles['background-layer']}>
+                                <Image
+                                    className={styles['background-image']}
+                                    src={item.background}
+                                    alt={item.name || ''}
+                                />
+                                <div className={styles['background-overlay']} />
+                            </div>
+                            <div className={styles['content-layer']}>
+                                <div className={styles['logo-container']}>
+                                    <Image
+                                        className={styles['logo-image']}
+                                        src={item.logo}
+                                        alt={item.name || ''}
+                                        renderFallback={renderLogoFallback}
+                                    />
+                                </div>
+                                <div className={styles['metadata-row']}>
+                                    {imdbRating && (
+                                        <div className={styles['badge-imdb']}>
+                                            <span className={styles['imdb-label']}>IMDb</span>
+                                            <span className={styles['imdb-rating']}>{imdbRating}</span>
+                                        </div>
+                                    )}
+                                    {year && <div className={styles['metadata-item']}>{year}</div>}
+                                    {runtime && (
+                                        <>
+                                            <div className={styles['metadata-separator']}>•</div>
+                                            <div className={styles['metadata-item']}>{runtime}</div>
+                                        </>
+                                    )}
+                                </div>
+                                {description && (
+                                    <div className={styles['description']}>
+                                        {description}
+                                    </div>
+                                )}
+                                <div className={styles['buttons-row']}>
+                                    <Button
+                                        className={classnames(styles['action-button'], styles['primary'])}
+                                        href={item.deepLinks?.metaDetailsVideos ?? item.deepLinks?.metaDetailsStreams ?? null}
+                                        title={'Watch Now'}
+                                    >
+                                        <Icon className={styles['icon']} name={'play'} />
+                                        <span className={styles['label']}>Watch Now</span>
+                                    </Button>
+                                    <Button
+                                        className={classnames(styles['action-button'], styles['secondary'])}
+                                        title={'My List'}
+                                    >
+                                        <Icon className={styles['icon']} name={'add'} />
+                                        <span className={styles['label']}>My List</span>
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+            {heroItems.length > 1 && (
+                <div className={styles['indicators']}>
+                    {heroItems.map((_, index) => (
+                        <div
+                            key={index}
+                            className={classnames(styles['indicator'], {
+                                [styles['active']]: index === currentIndex
+                            })}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
+module.exports = HeroShelf;
+

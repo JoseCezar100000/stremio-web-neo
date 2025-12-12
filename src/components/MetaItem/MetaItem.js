@@ -13,7 +13,7 @@ const useBinaryState = require('stremio/common/useBinaryState');
 const { ICON_FOR_TYPE } = require('stremio/common/CONSTANTS');
 const styles = require('./styles');
 
-const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, ...props }) => {
+const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, background, logo, ...props }) => {
     const { t } = useTranslation();
     const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
     const href = React.useMemo(() => {
@@ -58,6 +58,16 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
             name={ICON_FOR_TYPE.has(type) ? ICON_FOR_TYPE.get(type) : ICON_FOR_TYPE.get('other')}
         />
     ), [type]);
+    const renderLogoFallback = React.useCallback(() => (
+        <div className={styles['logo-placeholder']}>{name || ''}</div>
+    ), [name]);
+    const useBackdropLogo = React.useMemo(() => {
+        return posterShape === 'landscape' && 
+               typeof background === 'string' && 
+               background.length > 0 &&
+               typeof logo === 'string' && 
+               logo.length > 0;
+    }, [posterShape, background, logo]);
     const renderMenuLabelContent = React.useCallback(() => (
         <Icon className={styles['icon']} name={'more-vertical'} />
     ), []);
@@ -81,6 +91,27 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                         :
                         null
                 }
+                {useBackdropLogo ? (
+                    <>
+                        <div className={styles['background-image-layer']}>
+                            <Image
+                                className={styles['background-image']}
+                                src={background}
+                                alt={' '}
+                                renderFallback={renderPosterFallback}
+                            />
+                            <div className={styles['background-overlay']} />
+                        </div>
+                        <div className={styles['logo-image-layer']}>
+                            <Image
+                                className={styles['logo-image']}
+                                src={logo}
+                                alt={name || ''}
+                                renderFallback={renderLogoFallback}
+                            />
+                        </div>
+                    </>
+                ) : (
                 <div className={styles['poster-image-layer']}>
                     <Image
                         className={styles['poster-image']}
@@ -89,6 +120,7 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                         renderFallback={renderPosterFallback}
                     />
                 </div>
+                )}
                 {
                     onPlayClick ?
                         <div title={t('CONTINUE_WATCHING')} className={styles['play-icon-layer']} onClick={onPlayClick}>
@@ -175,7 +207,9 @@ MetaItem.propTypes = {
     onDismissClick: PropTypes.func,
     onPlayClick: PropTypes.func,
     onClick: PropTypes.func,
-    watched: PropTypes.bool
+    watched: PropTypes.bool,
+    background: PropTypes.string,
+    logo: PropTypes.string
 };
 
 module.exports = MetaItem;
