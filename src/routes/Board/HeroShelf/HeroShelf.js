@@ -61,6 +61,9 @@ const HeroShelf = ({ items }) => {
                     const year = item.releaseInfo;
                     const runtime = item.runtime;
                     const description = item.description;
+                    const trailerHref = Array.isArray(item.trailerStreams) && item.trailerStreams.length > 0
+                        ? item.trailerStreams[0].deepLinks?.player ?? null
+                        : null;
 
                     return (
                         <div
@@ -117,6 +120,16 @@ const HeroShelf = ({ items }) => {
                                         <Icon className={styles['icon']} name={'play'} />
                                         <span className={styles['label']}>Watch Now</span>
                                     </Button>
+                                    {trailerHref && (
+                                        <Button
+                                            className={classnames(styles['action-button'], styles['secondary'], styles['trailer-button'])}
+                                            href={trailerHref}
+                                            title={'Trailer'}
+                                        >
+                                            <Icon className={styles['icon']} name={'trailer'} />
+                                            <span className={styles['label']}>Trailer</span>
+                                        </Button>
+                                    )}
                                     <Button
                                         className={classnames(styles['action-button'], styles['secondary'])}
                                         title={'My List'}
