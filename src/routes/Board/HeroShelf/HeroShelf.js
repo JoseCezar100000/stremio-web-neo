@@ -130,18 +130,6 @@ const HeroShelf = ({ items }) => {
                     );
                 })}
             </div>
-            {heroItems.length > 1 && (
-                <div className={styles['indicators']}>
-                    {heroItems.map((_, index) => (
-                        <div
-                            key={index}
-                            className={classnames(styles['indicator'], {
-                                [styles['active']]: index === currentIndex
-                            })}
-                        />
-                    ))}
-                </div>
-            )}
         </div>
     );
 };

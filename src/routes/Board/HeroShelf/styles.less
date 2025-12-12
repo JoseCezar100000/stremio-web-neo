@@ -9,7 +9,6 @@
     margin-bottom: 2rem;
     overflow: visible; // Changed to visible to allow button scaling
     border-radius: var(--border-radius);
-    box-shadow: var(--outer-glow);
 
     .hero-shelf-wrapper {
         position: relative;
@@ -59,8 +58,8 @@
                 height: 100%;
                 background: linear-gradient(
                     to right,
-                    rgba(11, 11, 15, 0.9) 0%,
-                    rgba(11, 11, 15, 0.6) 40%,
+                    rgba(11, 11, 15, 0.5) 0%,
+                    rgba(11, 11, 15, 0.3) 40%,
                     rgba(11, 11, 15, 0) 100%
                 );
                 z-index: 1;
@@ -76,10 +75,11 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            justify-content: center;
+            justify-content: flex-end;
             z-index: 2;
             padding: 3rem;
             padding-left: 4rem;
+            padding-bottom: 8rem;
             max-width: 60%;
             overflow: visible;
 
@@ -89,7 +89,7 @@
                 display: flex;
                 align-items: flex-end;
                 justify-content: flex-start;
-                margin-bottom: 1rem;
+                margin-bottom: 0.75rem;
 
                 .logo-image {
                     max-width: 100%;
@@ -111,7 +111,7 @@
                 display: flex;
                 align-items: center;
                 gap: 1rem;
-                margin-bottom: 1rem;
+                margin-bottom: 0.75rem;
                 font-size: 1.1rem;
                 color: var(--primary-foreground-color);
                 font-weight: 500;
@@ -147,7 +147,7 @@
                 line-height: 1.5;
                 color: var(--primary-foreground-color);
                 opacity: 0.95;
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem;
                 font-weight: 500;
                 display: -webkit-box;
                 -webkit-line-clamp: 4; // Limit to 4 lines
@@ -155,22 +155,23 @@
                 overflow: hidden;
                 max-height: 7.2rem; // Limit vertical length (4 lines * 1.5 line-height * 1.2rem)
                 max-width: 80%; // Limit horizontal length
+                align-self: flex-start;
             }
 
             .buttons-row {
                 display: flex;
                 gap: 1rem;
                 overflow: visible;
-                position: relative;
+                position: absolute;
+                bottom: 4.5rem;
+                left: 4rem;
                 z-index: 10;
-                margin: -0.5rem; // Add negative margin to create space for scaling
-                padding: 0.5rem; // Add padding to compensate
 
                 .action-button {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    padding: 0.8rem 1.5rem;
+                    padding: 1.1rem 1.5rem;
                     border-radius: 2rem;
                     font-weight: 600;
                     font-size: 1rem;
@@ -182,7 +183,6 @@
 
                     &:hover {
                         transform: scale(1.1);
-                        z-index: 20;
                     }
 
                     .icon {
@@ -218,27 +218,6 @@
         }
     }
 
-    .indicators {
-        position: absolute;
-        bottom: 2rem;
-        right: 2rem; // Align to bottom right as per user request (or close to)
-        display: flex;
-        gap: 0.5rem;
-        z-index: 3;
-
-        .indicator {
-            width: 0.5rem;
-            height: 0.5rem;
-            border-radius: 50%;
-            background-color: var(--primary-foreground-color);
-            opacity: 0.4;
-            transition: opacity 0.3s ease-in-out;
-
-            &.active {
-                opacity: 1;
-            }
-        }
-    }
 }
 
 @media only screen and (max-width: @medium) {
@@ -246,6 +225,7 @@
         .hero-item {
             .content-layer {
                 padding: 2rem;
+                padding-bottom: 6rem;
                 max-width: 80%;
 
                 .logo-container {
@@ -260,6 +240,11 @@
                     font-size: 1rem;
                     -webkit-line-clamp: 3;
                 }
+
+                .buttons-row {
+                    bottom: 3rem;
+                    left: 2rem;
+                }
             }
         }
     }
@@ -270,6 +255,7 @@
         .hero-item {
             .content-layer {
                 padding: 1.5rem;
+                padding-bottom: 5rem;
                 max-width: 100%;
                 background: linear-gradient(
                     to top,
@@ -295,6 +281,11 @@
 
                 .description {
                     display: none; // Hide description on very small screens
+                }
+
+                .buttons-row {
+                    bottom: 2.5rem;
+                    left: 1.5rem;
                 }
             }
         }
