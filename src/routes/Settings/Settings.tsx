@@ -13,6 +13,7 @@ import Player from './Player';
 import Streaming from './Streaming';
 import Shortcuts from './Shortcuts';
 import HomeScreen from './HomeScreen';
+import DataEnrichment from './DataEnrichment';
 import Info from './Info';
 import styles from './Settings.less';
 
@@ -27,6 +28,7 @@ const Settings = () => {
     const playerSectionRef = useRef<HTMLDivElement>(null);
     const streamingServerSectionRef = useRef<HTMLDivElement>(null);
     const homeScreenSectionRef = useRef<HTMLDivElement>(null);
+    const dataEnrichmentSectionRef = useRef<HTMLDivElement>(null);
     const shortcutsSectionRef = useRef<HTMLDivElement>(null);
 
     const sections = useMemo(() => ([
@@ -34,6 +36,7 @@ const Settings = () => {
         { ref: playerSectionRef, id: SECTIONS.PLAYER },
         { ref: streamingServerSectionRef, id: SECTIONS.STREAMING },
         { ref: homeScreenSectionRef, id: SECTIONS.HOME_SCREEN },
+        { ref: dataEnrichmentSectionRef, id: SECTIONS.DATA_ENRICHMENT },
         { ref: shortcutsSectionRef, id: SECTIONS.SHORTCUTS },
     ]), []);
 
@@ -96,6 +99,10 @@ const Settings = () => {
                     />
                     <HomeScreen
                         ref={homeScreenSectionRef}
+                        profile={profile}
+                    />
+                    <DataEnrichment
+                        ref={dataEnrichmentSectionRef}
                         profile={profile}
                     />
                     {

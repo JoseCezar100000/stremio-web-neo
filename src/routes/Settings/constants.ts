@@ -4,6 +4,7 @@ const SECTIONS = {
     STREAMING: 'streaming',
     SHORTCUTS: 'shortcuts',
     HOME_SCREEN: 'home_screen',
+    DATA_ENRICHMENT: 'data_enrichment',
 };
 
 export {

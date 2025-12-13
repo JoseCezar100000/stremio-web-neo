@@ -33,7 +33,9 @@ if (translations['en-US']) {
         "SETTINGS_HOME_SCREEN_NO_CATALOGS": "No catalogs available",
         "SETTINGS_HOME_SCREEN_MOVE_UP": "Move Up",
         "SETTINGS_HOME_SCREEN_MOVE_DOWN": "Move Down",
-        "SETTINGS_HOME_SCREEN_DRAG_HANDLE": "Drag to reorder"
+        "SETTINGS_HOME_SCREEN_DRAG_HANDLE": "Drag to reorder",
+        "SETTINGS_NAV_DATA_ENRICHMENT": "Data Enrichment",
+        "SETTINGS_DATA_ENRICHMENT_TMDB_API_KEY": "TMDB API Key"
     });
 }
 

@@ -35,6 +35,9 @@ const Menu = ({ selected, streamingServer, onSelect }: Props) => {
             <Button className={classNames(styles['button'], { [styles['selected']]: selected === SECTIONS.HOME_SCREEN })} title={t('SETTINGS_NAV_HOME_SCREEN')} data-section={SECTIONS.HOME_SCREEN} onClick={onSelect}>
                 { t('SETTINGS_NAV_HOME_SCREEN') }
             </Button>
+            <Button className={classNames(styles['button'], { [styles['selected']]: selected === SECTIONS.DATA_ENRICHMENT })} title={t('SETTINGS_NAV_DATA_ENRICHMENT')} data-section={SECTIONS.DATA_ENRICHMENT} onClick={onSelect}>
+                { t('SETTINGS_NAV_DATA_ENRICHMENT') }
+            </Button>
             <Button className={classNames(styles['button'], { [styles['selected']]: selected === SECTIONS.SHORTCUTS })} title={t('SETTINGS_NAV_SHORTCUTS')} data-section={SECTIONS.SHORTCUTS} onClick={onSelect}>
                 { t('SETTINGS_NAV_SHORTCUTS') }
             </Button>

@@ -1,0 +1,36 @@
+@import (reference) '~stremio/common/screen-sizes.less';
+
+.api-key-container {
+    display: flex;
+    padding: 0.35rem 1.5rem;
+    border-radius: 2.5rem;
+    transition: 0.3s all ease-in-out;
+    background-color: var(--overlay-color);
+    border: 2px solid transparent;
+    max-width: 35rem;
+    width: 100%;
+
+    .api-key-input {
+        background-color: var(--overlay-color);
+        border-radius: var(--border-radius);
+        color: var(--primary-foreground-color);
+        padding: 0.5rem 0.75rem;
+        border: 1px solid transparent;
+        width: 100%;
+
+        &:focus {
+            border: 1px solid var(--primary-foreground-color);
+        }
+    }
+
+    &:hover {
+        border: 2px solid var(--overlay-color);
+    }
+}
+
+@media only screen and (max-width: @minimum) {
+    .api-key-container {
+        padding: 0.35rem 0.5rem;
+    }
+}
+
