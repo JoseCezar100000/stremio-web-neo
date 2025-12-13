@@ -19,7 +19,8 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
     }, [title, catalog, t.catalogTitle]);
 
     const items = React.useMemo(() => {
-        return catalog?.items ?? catalog?.content?.content;
+        const catalogItems = catalog?.items ?? catalog?.content?.content;
+        return Array.isArray(catalogItems) ? catalogItems : [];
     }, [catalog]);
 
     const href = React.useMemo(() => {

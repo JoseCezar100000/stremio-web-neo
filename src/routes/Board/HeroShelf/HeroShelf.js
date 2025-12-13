@@ -47,7 +47,7 @@ const HeroShelf = ({ items }) => {
     const renderLogoFallback = React.useCallback(() => {
         if (!currentItem) return null;
         return <div className={styles['logo-placeholder']}>{currentItem.name || ''}</div>;
-    }, [currentItem?.name]);
+    }, [currentItem]);
 
     if (items === undefined || items === null) {
         return (
