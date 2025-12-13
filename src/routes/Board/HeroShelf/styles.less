@@ -16,6 +16,46 @@
         padding-top: 30%; // Reduced height for hero section (25% less than 40%)
         overflow: hidden; // Keep hidden for background image clipping
         border-radius: var(--border-radius);
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+            opacity: 0;
+            color: var(--primary-foreground-color);
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.4);
+                opacity: 1;
+            }
+
+            &.prev {
+                left: 1rem;
+            }
+            &.next {
+                right: 1rem;
+            }
+
+            .nav-icon {
+                width: 1.5rem;
+                height: 1.5rem;
+                color: var(--primary-foreground-color);
+            }
+        }
+
+        &:hover .nav-button {
+            opacity: 1;
+        }
     }
 
     .hero-item {
@@ -25,14 +65,41 @@
         width: 100%;
         height: 100%;
         opacity: 0;
-        transition: opacity 1s ease-in-out;
         z-index: 0;
         pointer-events: none; // Allow clicks to pass through inactive items
 
         &.active {
             opacity: 1;
-            z-index: 1;
+            z-index: 2;
             pointer-events: auto;
+
+            .background-layer {
+                transform: translateX(0);
+            }
+
+            .content-layer {
+                opacity: 1;
+            }
+        }
+
+        &.prev, &.next {
+            opacity: 1;
+            z-index: 1;
+            .content-layer {
+                opacity: 0;
+            }
+        }
+
+        &.left .background-layer {
+            transform: translateX(-100%);
+        }
+
+        &.right .background-layer {
+            transform: translateX(100%);
+        }
+
+        &:not(.active):not(.prev):not(.next) .background-layer {
+            transition: none !important;
         }
 
         .background-layer {
@@ -42,6 +109,8 @@
             width: 100%;
             height: 100%;
             z-index: 0;
+            transform: translateX(100%);
+            transition: transform 0.8s ease-in-out;
 
             .background-image {
                 width: 100%;
@@ -82,6 +151,8 @@
             padding-bottom: 8rem;
             max-width: 60%;
             overflow: visible;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
 
             .logo-container {
                 width: 100%;

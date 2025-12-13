@@ -28,19 +28,34 @@ const HeroShelf = ({ items }) => {
             .slice(0, 10); // Limit to 10 items
     }, [items]);
 
+    const nextSlide = React.useCallback(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % heroItems.length);
+    }, [heroItems.length]);
+
+    const prevSlide = React.useCallback(() => {
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + heroItems.length) % heroItems.length);
+    }, [heroItems.length]);
+
     React.useEffect(() => {
         if (heroItems.length > 1) {
-            const itemsLength = heroItems.length;
-            interval.start(() => {
-                setCurrentIndex((prevIndex) => (prevIndex + 1) % itemsLength);
-            });
+            interval.start(nextSlide);
         } else {
             interval.cancel();
         }
         return () => {
             interval.cancel();
         };
-    }, [heroItems.length]);
+    }, [heroItems.length, nextSlide, interval]);
+
+    const onNext = React.useCallback(() => {
+        nextSlide();
+        interval.start(nextSlide);
+    }, [nextSlide, interval]);
+
+    const onPrev = React.useCallback(() => {
+        prevSlide();
+        interval.start(nextSlide);
+    }, [prevSlide, nextSlide, interval]);
 
     const currentItem = heroItems.length > 0 ? heroItems[currentIndex] : null;
 
@@ -86,6 +101,16 @@ const HeroShelf = ({ items }) => {
     return (
         <div className={styles['hero-shelf-container']}>
             <div className={styles['hero-shelf-wrapper']}>
+                {heroItems.length > 1 && (
+                    <>
+                        <div className={classnames(styles['nav-button'], styles['prev'])} onClick={onPrev}>
+                            <Icon className={styles['nav-icon']} name="chevron-back" />
+                        </div>
+                        <div className={classnames(styles['nav-button'], styles['next'])} onClick={onNext}>
+                            <Icon className={styles['nav-icon']} name="chevron-forward" />
+                        </div>
+                    </>
+                )}
                 {heroItems.map((item, index) => {
                     const isActive = index === currentIndex;
                     const imdbRating = item.links?.find(l => l.category === 'imdb')?.name;
@@ -96,13 +121,20 @@ const HeroShelf = ({ items }) => {
                         ? item.trailerStreams[0].deepLinks?.player ?? null
                         : null;
 
+                    const len = heroItems.length;
+                    const offset = (index - currentIndex + len) % len;
+                    const isLeft = offset > len / 2;
+                    const isRight = offset > 0 && offset <= len / 2;
+
                     return (
                         <div
                             key={index}
                             className={classnames(styles['hero-item'], {
                                 [styles['active']]: isActive,
                                 [styles['prev']]: index === (currentIndex - 1 + heroItems.length) % heroItems.length,
-                                [styles['next']]: index === (currentIndex + 1) % heroItems.length
+                                [styles['next']]: index === (currentIndex + 1) % heroItems.length,
+                                [styles['left']]: isLeft,
+                                [styles['right']]: isRight
                             })}
                         >
                             <div className={styles['background-layer']}>
