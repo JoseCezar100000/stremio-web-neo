@@ -11,7 +11,7 @@ const useTranslate = require('stremio/common/useTranslate');
 const MetaRowPlaceholder = require('./MetaRowPlaceholder');
 const styles = require('./styles');
 
-const MetaRow = ({ className, title, catalog, message, itemComponent, notifications }) => {
+const MetaRow = ({ className, title, catalog, message, itemComponent, notifications, previewSize }) => {
     const t = useTranslate();
 
     const catalogTitle = React.useMemo(() => {
@@ -25,6 +25,10 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
     const href = React.useMemo(() => {
         return catalog?.deepLinks?.discover ?? catalog?.deepLinks?.library;
     }, [catalog]);
+
+    const size = React.useMemo(() => {
+        return previewSize ?? CONSTANTS.CATALOG_PREVIEW_SIZE;
+    }, [previewSize]);
 
     return (
         <div className={classnames(className, styles['meta-row-container'])}>
@@ -52,18 +56,19 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
                     <div className={styles['meta-items-container']}>
                         {
                             ReactIs.isValidElementType(itemComponent) ?
-                                items.slice(0, CONSTANTS.CATALOG_PREVIEW_SIZE).map((item, index) => {
+                                items.slice(0, size).map((item, index) => {
+                                    const posterShape = item.posterShape || 'poster';
                                     return React.createElement(itemComponent, {
                                         ...item,
                                         key: index,
-                                        className: classnames(styles['meta-item'], styles['poster-shape-poster'], styles[`poster-shape-${item.posterShape}`]),
+                                        className: classnames(styles['meta-item'], styles[`poster-shape-${posterShape}`]),
                                         notifications,
                                     });
                                 })
                                 :
                                 null
                         }
-                        {Array(Math.max(0, CONSTANTS.CATALOG_PREVIEW_SIZE - items.length)).fill(null).map((_, index) => (
+                        {Array(Math.max(0, size - items.length)).fill(null).map((_, index) => (
                             <div key={index} className={classnames(styles['meta-item'], styles['poster-shape-poster'])} />
                         ))}
                     </div>
@@ -106,6 +111,7 @@ MetaRow.propTypes = {
     }),
     itemComponent: PropTypes.elementType,
     notifications: PropTypes.object,
+    previewSize: PropTypes.number,
 };
 
 module.exports = MetaRow;

@@ -14,13 +14,6 @@ const ContinueWatchingItem = ({ _id, notifications, deepLinks, ...props }) => {
         }
     }, [deepLinks]);
 
-    const onPlayClick = React.useCallback((event) => {
-        event.stopPropagation();
-        if (deepLinks?.player ?? deepLinks?.metaDetailsStreams ?? deepLinks?.metaDetailsVideos) {
-            window.location = deepLinks?.player ?? deepLinks?.metaDetailsStreams ?? deepLinks?.metaDetailsVideos;
-        }
-    }, [deepLinks]);
-
     const onDismissClick = React.useCallback((event) => {
         event.stopPropagation();
         if (typeof _id === 'string') {
@@ -48,7 +41,6 @@ const ContinueWatchingItem = ({ _id, notifications, deepLinks, ...props }) => {
             posterChangeCursor={true}
             notifications={notifications}
             onClick={onClick}
-            onPlayClick={onPlayClick}
             onDismissClick={onDismissClick}
         />
     );

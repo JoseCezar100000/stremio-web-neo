@@ -9,8 +9,10 @@ const { Button } = require('stremio/components');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const styles = require('./styles');
 
-const MetaRowPlaceholder = ({ className, title, deepLinks }) => {
+const MetaRowPlaceholder = ({ className, title, deepLinks, previewSize, posterShape }) => {
     const { t } = useTranslation();
+    const size = previewSize ?? CONSTANTS.CATALOG_PREVIEW_SIZE;
+    const shape = posterShape || 'poster';
     return (
         <div className={classnames(className, styles['meta-row-placeholder-container'])}>
             <div className={styles['header-container']}>
@@ -28,8 +30,8 @@ const MetaRowPlaceholder = ({ className, title, deepLinks }) => {
                 }
             </div>
             <div className={styles['meta-items-container']}>
-                {Array(CONSTANTS.CATALOG_PREVIEW_SIZE).fill(null).map((_, index) => (
-                    <div key={index} className={styles['meta-item']}>
+                {Array(size).fill(null).map((_, index) => (
+                    <div key={index} className={classnames(styles['meta-item'], styles[`poster-shape-${shape}`])}>
                         <div className={styles['poster-container']} />
                         <div className={styles['title-bar-container']}>
                             <div className={styles['title-label']} />
@@ -46,7 +48,9 @@ MetaRowPlaceholder.propTypes = {
     title: PropTypes.string,
     deepLinks: PropTypes.shape({
         discover: PropTypes.string
-    })
+    }),
+    previewSize: PropTypes.number,
+    posterShape: PropTypes.string
 };
 
 module.exports = MetaRowPlaceholder;

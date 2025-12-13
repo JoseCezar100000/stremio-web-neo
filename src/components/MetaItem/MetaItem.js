@@ -64,15 +64,22 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
     const useBackdropLogo = React.useMemo(() => {
         return posterShape === 'landscape' && 
                typeof background === 'string' && 
-               background.length > 0 &&
-               typeof logo === 'string' && 
-               logo.length > 0;
-    }, [posterShape, background, logo]);
+               background.length > 0;
+    }, [posterShape, background]);
+    
+    const usePosterWithTitle = React.useMemo(() => {
+        return posterShape === 'landscape' && 
+               (!background || background.length === 0) &&
+               typeof poster === 'string' && 
+               poster.length > 0 &&
+               typeof name === 'string' && 
+               name.length > 0;
+    }, [posterShape, background, poster, name]);
     const renderMenuLabelContent = React.useCallback(() => (
         <Icon className={styles['icon']} name={'more-vertical'} />
     ), []);
     return (
-        <Button title={name} href={href} {...filterInvalidDOMProps(props)} className={classnames(className, styles['meta-item-container'], styles['poster-shape-poster'], styles[`poster-shape-${posterShape}`], { 'active': menuOpen })} onClick={metaItemOnClick}>
+        <Button title={name} href={href} {...filterInvalidDOMProps(props)} className={classnames(className, styles['meta-item-container'], styles[`poster-shape-${posterShape || 'poster'}`], { 'active': menuOpen })} onClick={metaItemOnClick}>
             <div className={classnames(styles['poster-container'], { 'poster-change-cursor': posterChangeCursor })}>
                 {
                     onDismissClick ?
@@ -102,13 +109,31 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                             />
                             <div className={styles['background-overlay']} />
                         </div>
-                        <div className={styles['logo-image-layer']}>
+                        {(typeof logo === 'string' && logo.length > 0) ? (
+                            <div className={styles['logo-image-layer']}>
+                                <Image
+                                    className={styles['logo-image']}
+                                    src={logo}
+                                    alt={name || ''}
+                                    renderFallback={renderLogoFallback}
+                                />
+                            </div>
+                        ) : null}
+                    </>
+                ) : usePosterWithTitle ? (
+                    <>
+                        <div className={styles['poster-image-layer']}>
                             <Image
-                                className={styles['logo-image']}
-                                src={logo}
-                                alt={name || ''}
-                                renderFallback={renderLogoFallback}
+                                className={styles['poster-image']}
+                                src={poster}
+                                alt={' '}
+                                renderFallback={renderPosterFallback}
                             />
+                        </div>
+                        <div className={styles['title-overlay-layer']}>
+                            <div className={styles['title-overlay']}>
+                                {name}
+                            </div>
                         </div>
                     </>
                 ) : (

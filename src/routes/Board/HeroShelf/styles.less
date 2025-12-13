@@ -225,6 +225,155 @@
         }
     }
 
+    .hero-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+
+        .placeholder-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-placeholder-background);
+            border-radius: var(--border-radius);
+        }
+
+        .placeholder-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding: 3rem;
+            padding-left: 4rem;
+            padding-bottom: 8rem;
+            max-width: 60%;
+
+            .placeholder-logo {
+                width: 40%;
+                height: 7.5rem;
+                background: linear-gradient(to right, var(--color-placeholder-background) 0 40%, transparent 40% 100%);
+                border-radius: var(--border-radius);
+                margin-bottom: 0.75rem;
+            }
+
+            .placeholder-metadata {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 0.75rem;
+
+                .placeholder-badge {
+                    width: 4rem;
+                    height: 1.5rem;
+                    background-color: var(--color-placeholder-background);
+                    border-radius: 0.25rem;
+                }
+
+                .placeholder-text {
+                    width: 3rem;
+                    height: 1.2rem;
+                    background-color: var(--color-placeholder-background);
+                    border-radius: var(--border-radius);
+                }
+            }
+
+            .placeholder-description {
+                margin-bottom: 1rem;
+                width: 80%;
+
+                .placeholder-line {
+                    height: 1.2rem;
+                    background-color: var(--color-placeholder-background);
+                    border-radius: var(--border-radius);
+                    margin-bottom: 0.5rem;
+
+                    &:last-child {
+                        width: 60%;
+                    }
+                }
+            }
+
+            .placeholder-buttons {
+                display: flex;
+                gap: 1rem;
+                position: absolute;
+                bottom: 4.5rem;
+                left: 4rem;
+
+                .placeholder-button {
+                    width: 8rem;
+                    height: 3rem;
+                    background-color: var(--color-placeholder-background);
+                    border-radius: 2rem;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: @medium) {
+    .hero-shelf-container {
+        .hero-placeholder {
+            .placeholder-content {
+                padding: 2rem;
+                padding-bottom: 6rem;
+                max-width: 80%;
+
+                .placeholder-logo {
+                    height: 6rem;
+                }
+
+                .placeholder-description {
+                    .placeholder-line {
+                        &:last-child {
+                            display: none;
+                        }
+                    }
+                }
+
+                .placeholder-buttons {
+                    bottom: 3rem;
+                    left: 2rem;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: @small) {
+    .hero-shelf-container {
+        .hero-placeholder {
+            .placeholder-content {
+                padding: 1.5rem;
+                padding-bottom: 5rem;
+                max-width: 100%;
+
+                .placeholder-logo {
+                    height: 4rem;
+                    margin-bottom: 1rem;
+                }
+
+                .placeholder-description {
+                    display: none;
+                }
+
+                .placeholder-buttons {
+                    bottom: 2.5rem;
+                    left: 1.5rem;
+                }
+            }
+        }
+    }
 }
 
 @media only screen and (max-width: @medium) {

@@ -42,15 +42,45 @@ const HeroShelf = ({ items }) => {
         };
     }, [heroItems.length]);
 
+    const currentItem = heroItems.length > 0 ? heroItems[currentIndex] : null;
+
+    const renderLogoFallback = React.useCallback(() => {
+        if (!currentItem) return null;
+        return <div className={styles['logo-placeholder']}>{currentItem.name || ''}</div>;
+    }, [currentItem?.name]);
+
+    if (items === undefined || items === null) {
+        return (
+            <div className={styles['hero-shelf-container']}>
+                <div className={styles['hero-shelf-wrapper']}>
+                    <div className={styles['hero-placeholder']}>
+                        <div className={styles['placeholder-background']} />
+                        <div className={styles['placeholder-content']}>
+                            <div className={styles['placeholder-logo']} />
+                            <div className={styles['placeholder-metadata']}>
+                                <div className={styles['placeholder-badge']} />
+                                <div className={styles['placeholder-text']} />
+                            </div>
+                            <div className={styles['placeholder-description']}>
+                                <div className={styles['placeholder-line']} />
+                                <div className={styles['placeholder-line']} />
+                                <div className={styles['placeholder-line']} />
+                            </div>
+                            <div className={styles['placeholder-buttons']}>
+                                <div className={styles['placeholder-button']} />
+                                <div className={styles['placeholder-button']} />
+                                <div className={styles['placeholder-button']} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (heroItems.length === 0) {
         return null;
     }
-
-    const currentItem = heroItems[currentIndex];
-
-    const renderLogoFallback = React.useCallback(() => (
-        <div className={styles['logo-placeholder']}>{currentItem.name || ''}</div>
-    ), [currentItem.name]);
 
     return (
         <div className={styles['hero-shelf-container']}>

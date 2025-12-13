@@ -67,10 +67,18 @@
                 margin-left: 1.5rem;
             }
 
+            &.poster-shape-landscape {
+                flex: calc(1 / var(--landscape-shape-ratio));
+            }
+
             .poster-container {
                 border-radius: var(--border-radius);
                 padding-bottom: calc(100% * var(--poster-shape-ratio));
                 background-color: var(--color-placeholder-background);
+            }
+
+            &.poster-shape-landscape .poster-container {
+                padding-bottom: calc(100% * var(--landscape-shape-ratio));
             }
 
             .title-bar-container {

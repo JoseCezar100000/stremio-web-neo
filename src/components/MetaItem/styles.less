@@ -34,6 +34,10 @@
                 transform: scale(1.05);
             }
 
+            .background-image-layer {
+                transform: scale(1.05);
+            }
+
             .play-icon-layer {
                 .play-icon-outer {
                     color: transparent;
@@ -184,6 +188,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            transition: transform 0.1s ease-out;
 
             .background-image {
                 flex: none;
@@ -237,6 +242,30 @@
                 color: var(--primary-foreground-color);
                 text-align: center;
                 text-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        .title-overlay-layer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: -1;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+
+            .title-overlay {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: var(--primary-foreground-color);
+                text-align: center;
+                text-shadow: 0 0 1rem rgba(0, 0, 0, 0.9);
+                max-width: 80%;
+                line-height: 1.2;
             }
         }
 

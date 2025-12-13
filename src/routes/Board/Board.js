@@ -4,7 +4,7 @@ const React = require('react');
 const classnames = require('classnames');
 const debounce = require('lodash.debounce');
 const useTranslate = require('stremio/common/useTranslate');
-const { useStreamingServer, useNotifications, withCoreSuspender, getVisibleChildrenRange, useProfile } = require('stremio/common');
+const { useStreamingServer, useNotifications, withCoreSuspender, getVisibleChildrenRange, useProfile, useMetaDetailsForItems } = require('stremio/common');
 const { ContinueWatchingItem, EventModal, MainNavBars, MetaItem, MetaRow } = require('stremio/components');
 const useBoard = require('./useBoard');
 const useContinueWatchingPreview = require('./useContinueWatchingPreview');
@@ -21,7 +21,7 @@ const Board = () => {
     const [board, loadBoardRows] = useBoard();
     const notifications = useNotifications();
     const profile = useProfile();
-    const boardCatalogsOffset = continueWatchingPreview.items.length > 0 ? 1 : 0;
+    const boardCatalogsOffset = (continueWatchingPreview?.items?.length > 0 || (continueWatchingPreview?.content?.content && Array.isArray(continueWatchingPreview.content.content) && continueWatchingPreview.content.content.length > 0)) ? 1 : 0;
     const scrollContainerRef = React.useRef();
     const showStreamingServerWarning = React.useMemo(() => {
         return streamingServer.settings !== null && streamingServer.settings.type === 'Err' && (
@@ -61,6 +61,53 @@ const Board = () => {
         return items.slice(0, 10); // Limit to 10 items
     }, [board.catalogs]);
 
+    const sourceItems = React.useMemo(() => {
+        return continueWatchingPreview?.items ?? continueWatchingPreview?.content?.content ?? [];
+    }, [continueWatchingPreview]);
+    
+    // Fetch meta details for first 4 items to get background and logo
+    const { metaDataMap, isLoading: isLoadingMetaDetails } = useMetaDetailsForItems(sourceItems, 4);
+    
+    const continueWatchingCatalog = React.useMemo(() => {
+        if (!continueWatchingPreview) {
+            return continueWatchingPreview;
+        }
+        
+        if (!Array.isArray(sourceItems) || sourceItems.length === 0) {
+            return continueWatchingPreview;
+        }
+        
+        const items = sourceItems.map((item) => {
+            const itemKey = item._id || item.id;
+            const metaData = metaDataMap.get(itemKey) || metaDataMap.get(item._id) || metaDataMap.get(item.id);
+            
+            const finalBackground = metaData?.background || item.background || item.backdrop || item.fanart || item?.behaviorHints?.background;
+            const finalLogo = metaData?.logo || item.logo || item.logo_url || item?.behaviorHints?.logo;
+            
+            return {
+                ...item,
+                posterShape: 'landscape',
+                background: finalBackground,
+                logo: finalLogo
+            };
+        });
+        
+        if (continueWatchingPreview.items) {
+            return {
+                ...continueWatchingPreview,
+                items
+            };
+        } else {
+            return {
+                ...continueWatchingPreview,
+                content: {
+                    ...continueWatchingPreview.content,
+                    content: items
+                }
+            };
+        }
+    }, [continueWatchingPreview, sourceItems, metaDataMap]);
+
     React.useLayoutEffect(() => {
         onVisibleRangeChange();
     }, [board.catalogs, onVisibleRangeChange]);
@@ -69,18 +116,26 @@ const Board = () => {
             <EventModal />
             <MainNavBars className={styles['board-content-container']} route={'board'}>
                 <div ref={scrollContainerRef} className={styles['board-content']} onScroll={onScroll}>
-                    {heroItems.length > 0 && (
-                        <HeroShelf items={heroItems} />
-                    )}
+                    <HeroShelf items={heroItems.length > 0 ? heroItems : (board.catalogs.length > 0 ? [] : undefined)} />
                     {
-                        continueWatchingPreview.items.length > 0 ?
-                            <MetaRow
-                                className={classnames(styles['board-row'], styles['continue-watching-row'], 'animation-fade-in')}
-                                title={t.string('BOARD_CONTINUE_WATCHING')}
-                                catalog={continueWatchingPreview}
-                                itemComponent={ContinueWatchingItem}
-                                notifications={notifications}
-                            />
+                        (continueWatchingPreview?.items?.length > 0 || (continueWatchingPreview?.content?.content && Array.isArray(continueWatchingPreview.content.content) && continueWatchingPreview.content.content.length > 0)) ?
+                            isLoadingMetaDetails ?
+                                <MetaRow.Placeholder
+                                    className={classnames(styles['board-row'], styles['continue-watching-row'], 'animation-fade-in')}
+                                    title={t.string('BOARD_CONTINUE_WATCHING')}
+                                    deepLinks={continueWatchingPreview?.deepLinks}
+                                    previewSize={4}
+                                    posterShape="landscape"
+                                />
+                                :
+                                <MetaRow
+                                    className={classnames(styles['board-row'], styles['continue-watching-row'], 'animation-fade-in')}
+                                    title={t.string('BOARD_CONTINUE_WATCHING')}
+                                    catalog={continueWatchingCatalog}
+                                    itemComponent={ContinueWatchingItem}
+                                    notifications={notifications}
+                                    previewSize={4}
+                                />
                             :
                             null
                     }
