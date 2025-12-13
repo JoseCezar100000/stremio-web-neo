@@ -53,6 +53,7 @@
         margin-top: calc(var(--top-overlay-size) * -1);
         padding-top: var(--top-overlay-size);
         padding-bottom: var(--safe-area-inset-bottom, 0rem);
+        padding-right: 30rem;
         overflow-y: auto;
         
         .vertical-nav-bar {
@@ -91,28 +92,31 @@
 
         .meta-preview {
             flex: 1;
-            align-self: stretch;
+            align-self: flex-start;
             padding: 2rem 4rem;
             padding-left: max(2rem, calc(4rem - var(--safe-area-inset-left)));
             padding-right: max(2rem, calc(4rem - var(--safe-area-inset-right)));
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            min-height: 0;
-            overflow: hidden;
         }
 
         .spacing {
             display: none;
         }
+    }
 
-        .videos-list, .streams-list {
-            flex: 0 0 30rem;
-            align-self: stretch;
-            border-radius: var(--border-radius) 0 0 var(--border-radius);
-            background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(15px);
-        }
+    .videos-list, .streams-list {
+        position: fixed;
+        top: var(--top-overlay-size);
+        right: var(--safe-area-inset-right);
+        bottom: var(--safe-area-inset-bottom, 0rem);
+        width: 30rem;
+        z-index: 1;
+        border-radius: var(--border-radius) 0 0 var(--border-radius);
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(15px);
+        overflow-y: auto;
     }
 }
 
@@ -135,9 +139,19 @@
 @media @phone-landscape {
     .metadetails-container {
         .metadetails-content {
+            padding-right: 0;
+
             .meta-preview {
                 padding: 1.5rem 2rem;
             }
+        }
+
+        .videos-list, .streams-list {
+            position: relative;
+            top: auto;
+            right: auto;
+            bottom: auto;
+            width: 100%;
         }
     }
 }
@@ -147,6 +161,7 @@
         .metadetails-content {
             display: block;
             overflow-y: auto;
+            padding-right: 0;
 
             .spacing {
                 display: none;
@@ -155,10 +170,15 @@
             .meta-preview {
                 padding: 1.5rem;
             }
+        }
 
-            .videos-list, .streams-list {
-                border-radius: var(--border-radius) var(--border-radius) 0 0;
-            }
+        .videos-list, .streams-list {
+            position: relative;
+            top: auto;
+            right: auto;
+            bottom: auto;
+            width: 100%;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
         }
     }
 }
