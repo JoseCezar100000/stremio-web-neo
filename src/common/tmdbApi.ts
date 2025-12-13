@@ -23,7 +23,7 @@ export const setTMDBApiKey = (key: string): void => {
 const extractMaturityRating = (data: TMDBMovieDetails | TMDBTVDetails): string | null => {
     if ('release_dates' in data && data.release_dates?.results) {
         const usRelease = data.release_dates.results.find(r => r.iso_3166_1 === 'US');
-        if (usRelease?.release_dates?.length > 0) {
+        if (usRelease && usRelease.release_dates && usRelease.release_dates.length > 0) {
             const certification = usRelease.release_dates[0].certification;
             if (certification) return certification;
         }
@@ -57,13 +57,12 @@ export const getTMDBData = async (
     }
 
     try {
-        const url = `${API_BASE_URL}/${type}/${imdbId}?append_to_response=credits,release_dates,similar,recommendations,collection&language=en-US`;
+        const url = `${API_BASE_URL}/${type}/${imdbId}?api_key=${apiKey}&append_to_response=credits,release_dates,similar,recommendations,collection&language=en-US`;
         
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'accept': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
+                'accept': 'application/json'
             }
         });
 
