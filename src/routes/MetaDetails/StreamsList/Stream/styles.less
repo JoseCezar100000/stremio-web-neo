@@ -19,10 +19,12 @@
     gap: 1rem;
     padding: 0.5rem 1rem;
     margin-bottom: 0.5rem;
-    border-radius: var(--border-radius);
+    border-radius: 2rem;
+    transition: border-radius 0.2s ease;
 
     &:hover, &:focus {
         background-color: var(--overlay-color);
+        border-radius: 0.5rem;
     }
 
     &:hover, &:focus, &:global(.selected) {

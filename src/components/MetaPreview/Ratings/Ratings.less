@@ -2,59 +2,79 @@
 
 @import (reference) '~stremio/common/screen-sizes.less';
 
-@height: 4rem;
-@width: 4rem;
-@height-mobile: 3rem;
-@width-mobile: 3rem;
-
-
 .ratings-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    background-color: var(--overlay-color);
+    gap: 0;
+    height: 4rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
     border-radius: 2rem;
-    height: @height;
-    width: fit-content;
+    border: none;
+    padding: 0;
+    transition: border-radius 0.2s ease, opacity 0.2s ease;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+
+    &:hover, &:focus {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 0.5rem;
+    }
 
     .icon-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: @height;
-        width: @width;
-        padding: 0 1rem;
+        height: 4rem;
+        width: 4rem;
+        padding: 0;
         cursor: pointer;
+        flex: none;
 
         .icon {
-            width: calc(@width / 2);
-            height: calc(@height / 2);
+            width: 1.6rem;
+            height: 1.6rem;
             color: var(--primary-foreground-color);
-            opacity: 0.7;
-
-            &:hover {
-                opacity: 1;
-            }
+            opacity: 1;
         }
 
         &.disabled {
             pointer-events: none;
+            opacity: 0.5;
         }
     }
 }
 
 @media @phone-landscape {
     .ratings-container {
-        height: @height-mobile;
+        height: 3.5rem;
 
         .icon-container {
-            height: @height-mobile;
-            width: @width-mobile;
+            height: 3.5rem;
+            width: 3.5rem;
 
             .icon {
-                width: 1.75rem;
-                height: 1.75rem;
+                width: 1.4rem;
+                height: 1.4rem;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: @minimum) {
+    .ratings-container {
+        height: 4rem;
+
+        .icon-container {
+            height: 4rem;
+            width: 4rem;
+
+            .icon {
+                width: 1.6rem;
+                height: 1.6rem;
             }
         }
     }

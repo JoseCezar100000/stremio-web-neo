@@ -110,13 +110,13 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                             <div className={styles['background-overlay']} />
                         </div>
                         {(typeof logo === 'string' && logo.length > 0) ? (
-                            <div className={styles['logo-image-layer']}>
-                                <Image
-                                    className={styles['logo-image']}
-                                    src={logo}
-                                    alt={name || ''}
-                                    renderFallback={renderLogoFallback}
-                                />
+                        <div className={styles['logo-image-layer']}>
+                            <Image
+                                className={styles['logo-image']}
+                                src={logo}
+                                alt={name || ''}
+                                renderFallback={renderLogoFallback}
+                            />
                             </div>
                         ) : null}
                     </>

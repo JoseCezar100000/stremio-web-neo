@@ -53,6 +53,8 @@
         margin-top: calc(var(--top-overlay-size) * -1);
         padding-top: var(--top-overlay-size);
         padding-bottom: var(--safe-area-inset-bottom, 0rem);
+        overflow-y: auto;
+        
         .vertical-nav-bar {
             flex: none;
         }
@@ -88,15 +90,18 @@
         }
 
         .meta-preview {
-            flex: 0 1 auto;
+            flex: 1;
             align-self: stretch;
-            padding: 0 4rem 2rem 4rem;
-
-            padding-left: max(1rem, calc(4rem - var(--safe-area-inset-left)));
+            padding: 2rem 4rem;
+            padding-left: max(2rem, calc(4rem - var(--safe-area-inset-left)));
+            padding-right: max(2rem, calc(4rem - var(--safe-area-inset-right)));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .spacing {
-            flex: 1;
+            display: none;
         }
 
         .videos-list, .streams-list {
@@ -129,7 +134,7 @@
     .metadetails-container {
         .metadetails-content {
             .meta-preview {
-                padding: 0 1.5rem 1rem;
+                padding: 1.5rem 2rem;
             }
         }
     }
@@ -146,7 +151,7 @@
             }
 
             .meta-preview {
-                padding: 0 1.5rem 2rem;
+                padding: 1.5rem;
             }
 
             .videos-list, .streams-list {

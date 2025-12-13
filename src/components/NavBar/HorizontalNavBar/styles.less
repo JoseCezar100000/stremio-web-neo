@@ -35,6 +35,20 @@
 
     .back-button-container {
         margin-left: max(0rem, calc(1rem - var(--safe-area-inset-left)));
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0 1rem;
+        width: auto;
+        min-width: auto;
+
+        .back-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary-foreground-color);
+            white-space: nowrap;
+        }
     }
 
     .title {
@@ -108,6 +122,12 @@
 
         .logo-container {
             width: var(--horizontal-nav-bar-size);
+        }
+
+        .back-button-container {
+            .back-label {
+                display: none;
+            }
         }
 
         .button-container {

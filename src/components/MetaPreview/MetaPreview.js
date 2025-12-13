@@ -73,6 +73,77 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
             :
             new Map();
     }, [links]);
+    
+    // Extract director and cast from links
+    const directorLinks = React.useMemo(() => {
+        const directors = linksGroups.get('Director') || linksGroups.get('Directors') || [];
+        return Array.isArray(directors) ? directors : [];
+    }, [linksGroups]);
+    
+    const castLinks = React.useMemo(() => {
+        const cast = linksGroups.get('Cast') || linksGroups.get('Actors') || linksGroups.get('Starring') || [];
+        return Array.isArray(cast) ? cast : [];
+    }, [linksGroups]);
+    
+    // Extract genres from releaseInfo or links (max 3, space-separated)
+    const genres = React.useMemo(() => {
+        let genreList = [];
+        // Try to extract from releaseInfo (format: "2024 • Sci-Fi, Adventure" or just "Sci-Fi, Adventure")
+        if (typeof releaseInfo === 'string') {
+            const parts = releaseInfo.split('•');
+            if (parts.length > 1) {
+                const genrePart = parts.slice(1).join('•').trim();
+                if (genrePart.length > 0) {
+                    genreList = genrePart.split(',').map(g => g.trim()).filter(g => g.length > 0);
+                }
+            } else if (releaseInfo.includes(',')) {
+                genreList = releaseInfo.split(',').map(g => g.trim()).filter(g => g.length > 0);
+            }
+        }
+        // Try from links if not found in releaseInfo
+        if (genreList.length === 0) {
+            const genreLinks = linksGroups.get('Genre') || linksGroups.get('Genres') || [];
+            if (Array.isArray(genreLinks) && genreLinks.length > 0) {
+                genreList = genreLinks.map(link => link.label);
+            }
+        }
+        // Limit to max 3 and join with space
+        return genreList.length > 0 ? genreList.slice(0, 3).join(' ') : null;
+    }, [releaseInfo, linksGroups]);
+    
+    // Extract year from releaseInfo or released date
+    const year = React.useMemo(() => {
+        if (typeof releaseInfo === 'string') {
+            const parts = releaseInfo.split('•');
+            if (parts.length > 0) {
+                const yearMatch = parts[0].trim().match(/\d{4}/);
+                if (yearMatch) {
+                    return yearMatch[0];
+                }
+            }
+            // If no bullet, try to find year anywhere in releaseInfo
+            const yearMatch = releaseInfo.match(/\b(19|20)\d{2}\b/);
+            if (yearMatch) {
+                return yearMatch[0];
+            }
+        }
+        if (released instanceof Date && !isNaN(released.getTime())) {
+            return released.getFullYear().toString();
+        }
+        return null;
+    }, [releaseInfo, released]);
+    
+    // Extract IMDb rating
+    const imdbRating = React.useMemo(() => {
+        if (linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY)) {
+            const imdbLink = linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY);
+            // Extract rating from label (e.g., "8.8" from "IMDb 8.8" or just "8.8")
+            const ratingMatch = imdbLink.label.match(/(\d+\.?\d*)/);
+            return ratingMatch ? ratingMatch[1] : null;
+        }
+        return null;
+    }, [linksGroups]);
+    
     const showHref = React.useMemo(() => {
         return deepLinks ?
             typeof deepLinks.player === 'string' ?
@@ -88,6 +159,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
             :
             null;
     }, [deepLinks]);
+    
     const trailerHref = React.useMemo(() => {
         if (!Array.isArray(trailerStreams) || trailerStreams.length === 0) {
             return null;
@@ -98,6 +170,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
     const renderLogoFallback = React.useCallback(() => (
         <div className={styles['logo-placeholder']}>{name}</div>
     ), [name]);
+    
     return (
         <div className={classnames(className, styles['meta-preview-container'], { [styles['compact']]: compact })} ref={ref}>
             {
@@ -109,150 +182,83 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                     null
             }
             <div className={styles['meta-info-container']}>
-                {
-                    typeof logo === 'string' && logo.length > 0 ?
-                        <Image
-                            className={styles['logo']}
-                            src={logo}
-                            alt={' '}
-                            title={name}
-                            renderFallback={renderLogoFallback}
-                        />
-                        :
-                        renderLogoFallback()
-                }
-                {
-                    (typeof releaseInfo === 'string' && releaseInfo.length > 0) || (released instanceof Date && !isNaN(released.getTime())) || (typeof runtime === 'string' && runtime.length > 0) || linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY) ?
-                        <div className={styles['runtime-release-info-container']}>
-                            {
-                                typeof runtime === 'string' && runtime.length > 0 ?
-                                    <div className={styles['runtime-label']}>{runtime}</div>
-                                    :
-                                    null
-                            }
-                            {
-                                typeof releaseInfo === 'string' && releaseInfo.length > 0 ?
-                                    <div className={styles['release-info-label']}>{releaseInfo}</div>
-                                    :
-                                    released instanceof Date && !isNaN(released.getTime()) ?
-                                        <div className={styles['release-info-label']}>{released.getFullYear()}</div>
-                                        :
-                                        null
-                            }
-                            {
-                                linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY) ?
-                                    <Button
-                                        className={styles['imdb-button-container']}
-                                        title={linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).label}
-                                        href={linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).href}
-                                        target={'_blank'}
-                                        {...(compact ? { tabIndex: -1 } : null)}
-                                    >
-                                        <div className={styles['label']}>{linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).label}</div>
-                                        <Icon className={styles['icon']} name={'imdb'} />
-                                    </Button>
-                                    :
-                                    null
-                            }
+                {/* Logo */}
+                {typeof logo === 'string' && logo.length > 0 ? (
+                    <Image
+                        className={styles['logo']}
+                        src={logo}
+                        alt={name || ''}
+                        title={name}
+                        renderFallback={renderLogoFallback}
+                    />
+                ) : (
+                    <div className={styles['logo-placeholder']}>{name}</div>
+                )}
+                
+                {/* Metadata Row */}
+                <div className={styles['metadata-row']}>
+                    {year && <div className={styles['metadata-item']}>{year}</div>}
+                    {genres && (
+                        <>
+                            <div className={styles['metadata-separator']}>•</div>
+                            <div className={styles['metadata-item']}>{genres}</div>
+                        </>
+                    )}
+                    {runtime && (
+                        <>
+                            <div className={styles['metadata-separator']}>•</div>
+                            <div className={styles['metadata-item']}>{runtime}</div>
+                        </>
+                    )}
+                </div>
+                
+                {/* IMDb Rating on its own line */}
+                {imdbRating && (
+                    <div className={styles['imdb-rating-row']}>
+                        <div className={styles['badge-imdb']}>
+                            <span className={styles['imdb-label']}>IMDb</span>
+                            <span className={styles['imdb-rating']}>{imdbRating}</span>
                         </div>
-                        :
-                        null
-                }
-                {
-                    compact && typeof description === 'string' && description.length > 0 ?
-                        <div className={styles['description-container']}>
-                            {description}
-                        </div>
-                        :
-                        null
-                }
-                {
-                    Array.from(linksGroups.keys())
-                        .filter((category) => {
-                            return category !== CONSTANTS.IMDB_LINK_CATEGORY &&
-                                category !== CONSTANTS.SHARE_LINK_CATEGORY &&
-                                category !== CONSTANTS.WRITERS_LINK_CATEGORY;
-                        })
-                        .map((category, index) => (
-                            <MetaLinks
-                                key={index}
-                                className={styles['meta-links']}
-                                label={category}
-                                links={linksGroups.get(category)}
-                            />
-                        ))
-                }
-                {
-                    !compact && typeof description === 'string' && description.length > 0 ?
-                        <div className={styles['description-container']}>
-                            <div className={styles['label-container']}>
-                                {t('SUMMARY')}
-                            </div>
-                            {description}
-                        </div>
-                        :
-                        null
-                }
-            </div>
-            <div className={styles['action-buttons-container']}>
-                {
-                    typeof toggleInLibrary === 'function' ?
-                        <ActionButton
-                            className={styles['action-button']}
-                            icon={inLibrary ? 'remove-from-library' : 'add-to-library'}
-                            label={inLibrary ? t('REMOVE_FROM_LIB') : t('ADD_TO_LIB')}
-                            tooltip={compact}
-                            tabIndex={compact ? -1 : 0}
-                            onClick={toggleInLibrary}
-                        />
-                        :
-                        null
-                }
-                {
-                    typeof trailerHref === 'string' ?
-                        <ActionButton
-                            className={styles['action-button']}
-                            icon={'trailer'}
-                            label={t('TRAILER')}
-                            tabIndex={compact ? -1 : 0}
+                    </div>
+                )}
+                
+                {/* Action Buttons */}
+                <div className={styles['action-buttons-row']}>
+                    {typeof trailerHref === 'string' && (
+                        <Button
+                            className={classnames(styles['action-button'], styles['primary-button'])}
                             href={trailerHref}
-                            tooltip={compact}
-                        />
-                        :
-                        null
-                }
-                {
-                    typeof showHref === 'string' && compact ?
-                        <ActionButton
-                            className={classnames(styles['action-button'], styles['show-button'])}
-                            icon={'play'}
-                            label={t('SHOW')}
-                            tabIndex={compact ? -1 : 0}
-                            href={showHref}
-                        />
-                        :
-                        null
-                }
-                {
-                    !compact && ratingInfo !== null ?
+                            title={t('TRAILER')}
+                        >
+                            <Icon className={styles['button-icon']} name={'play'} />
+                            <span className={styles['button-label']}>{t('TRAILER')}</span>
+                        </Button>
+                    )}
+                    {typeof toggleInLibrary === 'function' && (
+                        <Button
+                            className={classnames(styles['action-button'], styles['secondary-button'])}
+                            onClick={toggleInLibrary}
+                            title={inLibrary ? t('REMOVE_FROM_LIB') : t('ADD_TO_LIB')}
+                        >
+                            <Icon className={styles['button-icon']} name={inLibrary ? 'remove-from-library' : 'add-to-library'} />
+                            <span className={styles['button-label']}>{inLibrary ? t('REMOVE_FROM_LIB') : t('ADD_TO_LIB')}</span>
+                        </Button>
+                    )}
+                    {!compact && ratingInfo !== null && (
                         <Ratings
                             ratingInfo={ratingInfo}
                             className={styles['ratings']}
                         />
-                        :
-                        null
-                }
-                {
-                    linksGroups.has(CONSTANTS.SHARE_LINK_CATEGORY) && !compact ?
+                    )}
+                    {linksGroups.has(CONSTANTS.SHARE_LINK_CATEGORY) && (
                         <React.Fragment>
-                            <ActionButton
-                                className={styles['action-button']}
-                                icon={'share'}
-                                label={t('CTX_SHARE')}
-                                tooltip={true}
-                                tabIndex={compact ? -1 : 0}
+                            <Button
+                                className={classnames(styles['action-button'], styles['share-button'])}
                                 onClick={openShareModal}
-                            />
+                                title={t('CTX_SHARE')}
+                            >
+                                <Icon className={styles['button-icon']} name={'share'} />
+                            </Button>
                             {
                                 shareModalOpen ?
                                     <ModalDialog title={t('CTX_SHARE')} onCloseRequest={closeShareModal}>
@@ -265,9 +271,89 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                                     null
                             }
                         </React.Fragment>
-                        :
-                        null
-                }
+                    )}
+                </div>
+                
+                {/* Synopsis */}
+                {typeof description === 'string' && description.length > 0 && (
+                    <div className={styles['synopsis']}>
+                        {description}
+                    </div>
+                )}
+                
+                {/* Director */}
+                {directorLinks.length > 0 && (
+                    <div className={styles['crew-section']}>
+                        <div className={styles['crew-label']}>DIRECTOR</div>
+                        <div className={styles['crew-names']}>
+                            {directorLinks.map((link, index) => (
+                                <React.Fragment key={index}>
+                                    {index > 0 && <span className={styles['crew-separator']}> • </span>}
+                                    {link.href ? (
+                                        <Button
+                                            className={styles['crew-name-link']}
+                                            href={link.href}
+                                            title={link.label}
+                                        >
+                                            {link.label}
+                                        </Button>
+                                    ) : (
+                                        <span className={styles['crew-name']}>{link.label}</span>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                
+                {/* Cast */}
+                {castLinks.length > 0 && (
+                    <div className={styles['crew-section']}>
+                        <div className={styles['crew-label']}>CAST</div>
+                        <div className={styles['crew-names']}>
+                            {castLinks.slice(0, 10).map((link, index) => (
+                                <React.Fragment key={index}>
+                                    {index > 0 && <span className={styles['crew-separator']}> • </span>}
+                                    {link.href ? (
+                                        <Button
+                                            className={styles['crew-name-link']}
+                                            href={link.href}
+                                            title={link.label}
+                                        >
+                                            {link.label}
+                                        </Button>
+                                    ) : (
+                                        <span className={styles['crew-name']}>{link.label}</span>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                
+                {/* Other Links (excluding already displayed categories) */}
+                {Array.from(linksGroups.keys())
+                    .filter((category) => {
+                        return category !== CONSTANTS.IMDB_LINK_CATEGORY &&
+                            category !== CONSTANTS.SHARE_LINK_CATEGORY &&
+                            category !== CONSTANTS.WRITERS_LINK_CATEGORY &&
+                            category !== 'Director' &&
+                            category !== 'Directors' &&
+                            category !== 'Cast' &&
+                            category !== 'Actors' &&
+                            category !== 'Starring' &&
+                            category !== 'Genre' &&
+                            category !== 'Genres';
+                    })
+                    .map((category, index) => (
+                        <MetaLinks
+                            key={index}
+                            className={styles['meta-links']}
+                            label={category}
+                            links={linksGroups.get(category)}
+                        />
+                    ))}
+                
             </div>
         </div>
     );
