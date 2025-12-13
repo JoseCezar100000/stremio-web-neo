@@ -116,7 +116,7 @@ const Board = () => {
             <EventModal />
             <MainNavBars className={styles['board-content-container']} route={'board'}>
                 <div ref={scrollContainerRef} className={styles['board-content']} onScroll={onScroll}>
-                    <HeroShelf items={heroItems.length > 0 ? heroItems : (board.catalogs.length > 0 ? [] : undefined)} />
+                    <HeroShelf items={heroItems.length > 0 ? heroItems : undefined} />
                     {
                         (continueWatchingPreview?.items?.length > 0 || (continueWatchingPreview?.content?.content && Array.isArray(continueWatchingPreview.content.content) && continueWatchingPreview.content.content.length > 0)) ?
                             isLoadingMetaDetails ?

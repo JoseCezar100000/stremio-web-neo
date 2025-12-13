@@ -79,6 +79,7 @@ const HeroShelf = ({ items }) => {
     }
 
     if (heroItems.length === 0) {
+        // No hero items found (either still loading or none match criteria)
         return null;
     }
 
