@@ -1,0 +1,130 @@
+@import (reference) '~@stremio/stremio-colors/less/stremio-colors.less';
+
+.cast-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.5rem;
+
+    .cast-label {
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--primary-foreground-color);
+        opacity: 0.5;
+    }
+
+    .cast-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 0.75rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        scrollbar-width: none;
+    }
+
+    .cast-button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        height: 4rem;
+        padding: 0 1.5rem;
+        padding-left: 0.5rem;
+        border-radius: 2rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(3px);
+        transition: border-radius 0.2s ease, background-color 0.2s ease;
+        overflow: hidden;
+        flex-shrink: 0;
+        min-width: fit-content;
+
+        &:hover, &:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 0.5rem;
+        }
+
+        .cast-image-container {
+            flex: none;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.1);
+
+            .cast-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .cast-image-placeholder {
+                width: 100%;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+        }
+
+        .cast-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            min-width: 0;
+
+            .cast-name {
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--primary-foreground-color);
+                line-height: 1.2;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .cast-character {
+                font-size: 0.9rem;
+                font-weight: 400;
+                color: var(--primary-foreground-color);
+                opacity: 0.7;
+                line-height: 1.2;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .cast-section {
+        .cast-button {
+            height: 3.5rem;
+            padding: 0 1.2rem;
+            padding-left: 0.4375rem;
+            border-radius: 1.75rem;
+
+            .cast-image-container {
+                width: 2.625rem;
+                height: 2.625rem;
+            }
+
+            .cast-info {
+                .cast-name {
+                    font-size: 0.9rem;
+                }
+
+                .cast-character {
+                    font-size: 0.8rem;
+                }
+            }
+        }
+    }
+}
+

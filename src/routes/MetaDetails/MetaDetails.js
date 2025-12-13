@@ -12,6 +12,7 @@ const VideosList = require('./VideosList');
 const useMetaDetails = require('./useMetaDetails');
 const useSeason = require('./useSeason');
 const useMetaExtensionTabs = require('./useMetaExtensionTabs');
+const { useTMDBData } = require('stremio/common/useTMDBData');
 const styles = require('./styles');
 
 const MetaDetails = ({ urlParams, queryParams }) => {
@@ -20,6 +21,9 @@ const MetaDetails = ({ urlParams, queryParams }) => {
     const metaDetails = useMetaDetails(urlParams);
     const [season, setSeason] = useSeason(urlParams, queryParams);
     const [tabs, metaExtension, clearMetaExtension] = useMetaExtensionTabs(metaDetails.metaExtensions);
+    const tmdbData = useTMDBData(
+        metaDetails.metaItem?.content?.type === 'Ready' ? metaDetails.metaItem.content.content : null
+    );
     const [metaPath, streamPath] = React.useMemo(() => {
         return metaDetails.selected !== null ?
             [metaDetails.selected.metaPath, metaDetails.selected.streamPath]
@@ -170,6 +174,7 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                                             toggleInLibrary={metaDetails.metaItem.content.content.inLibrary ? removeFromLibrary : addToLibrary}
                                             metaId={metaDetails.metaItem.content.content.id}
                                             ratingInfo={metaDetails.ratingInfo}
+                                            tmdbCast={tmdbData.data?.cast || null}
                                         />
                                     </React.Fragment>
                 }

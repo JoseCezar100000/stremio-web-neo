@@ -16,6 +16,7 @@ const useBinaryState = require('stremio/common/useBinaryState');
 const ActionButton = require('./ActionButton');
 const MetaLinks = require('./MetaLinks');
 const MetaPreviewPlaceholder = require('./MetaPreviewPlaceholder');
+const { Cast } = require('./Cast');
 const styles = require('./styles');
 const { Ratings } = require('./Ratings');
 
@@ -25,7 +26,7 @@ const ALLOWED_LINK_REDIRECTS = [
     routesRegexp.metadetails.regexp
 ];
 
-const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo }, ref) => {
+const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo, tmdbCast }, ref) => {
     const { t } = useTranslation();
     const [shareModalOpen, openShareModal, closeShareModal] = useBinaryState(false);
     const linksGroups = React.useMemo(() => {
@@ -285,50 +286,54 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                 {directorLinks.length > 0 && (
                     <div className={styles['crew-section']}>
                         <div className={styles['crew-label']}>DIRECTOR</div>
-                        <div className={styles['crew-names']}>
+                        <div className={styles['crew-pills']}>
                             {directorLinks.map((link, index) => (
-                                <React.Fragment key={index}>
-                                    {index > 0 && <span className={styles['crew-separator']}> • </span>}
-                                    {link.href ? (
-                                        <Button
-                                            className={styles['crew-name-link']}
-                                            href={link.href}
-                                            title={link.label}
-                                        >
-                                            {link.label}
-                                        </Button>
-                                    ) : (
-                                        <span className={styles['crew-name']}>{link.label}</span>
-                                    )}
-                                </React.Fragment>
+                                link.href ? (
+                                    <Button
+                                        key={index}
+                                        className={styles['crew-pill']}
+                                        href={link.href}
+                                        title={link.label}
+                                    >
+                                        {link.label}
+                                    </Button>
+                                ) : (
+                                    <span key={index} className={styles['crew-pill']}>
+                                        {link.label}
+                                    </span>
+                                )
                             ))}
                         </div>
                     </div>
                 )}
                 
                 {/* Cast */}
-                {castLinks.length > 0 && (
-                    <div className={styles['crew-section']}>
-                        <div className={styles['crew-label']}>CAST</div>
-                        <div className={styles['crew-names']}>
-                            {castLinks.slice(0, 10).map((link, index) => (
-                                <React.Fragment key={index}>
-                                    {index > 0 && <span className={styles['crew-separator']}> • </span>}
-                                    {link.href ? (
+                {tmdbCast && tmdbCast.length > 0 ? (
+                    <Cast cast={tmdbCast} />
+                ) : (
+                    castLinks.length > 0 && (
+                        <div className={styles['crew-section']}>
+                            <div className={styles['crew-label']}>CAST</div>
+                            <div className={styles['crew-pills']}>
+                                {castLinks.slice(0, 10).map((link, index) => (
+                                    link.href ? (
                                         <Button
-                                            className={styles['crew-name-link']}
+                                            key={index}
+                                            className={styles['crew-pill']}
                                             href={link.href}
                                             title={link.label}
                                         >
                                             {link.label}
                                         </Button>
                                     ) : (
-                                        <span className={styles['crew-name']}>{link.label}</span>
-                                    )}
-                                </React.Fragment>
-                            ))}
+                                        <span key={index} className={styles['crew-pill']}>
+                                            {link.label}
+                                        </span>
+                                    )
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )
                 )}
                 
                 {/* Other Links (excluding already displayed categories) */}
@@ -385,6 +390,7 @@ MetaPreview.propTypes = {
     inLibrary: PropTypes.bool,
     toggleInLibrary: PropTypes.func,
     ratingInfo: PropTypes.object,
+    tmdbCast: PropTypes.array,
 };
 
 module.exports = MetaPreview;
