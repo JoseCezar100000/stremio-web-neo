@@ -1,0 +1,129 @@
+// Copyright (C) 2017-2025 Smart code 203358507
+
+.catalog-item {
+    margin-bottom: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2.5rem;
+    background-color: var(--overlay-color);
+    border: 2px solid transparent;
+    cursor: grab;
+    transition: all 0.2s ease;
+    max-width: 35rem;
+    width: 100%;
+    
+    &:hover {
+        border-color: var(--overlay-color);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    &.dragging {
+        opacity: 0.5;
+        cursor: grabbing;
+    }
+    
+    &.drag-over {
+        border-color: var(--secondary-accent-color);
+        background-color: var(--color-surface-hover, var(--color-surface));
+    }
+}
+
+.catalog-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: grab;
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    
+    &:active {
+        cursor: grabbing;
+    }
+    
+    .catalog-item:hover & {
+        opacity: 1;
+    }
+}
+
+.drag-handle-icon {
+    width: 1rem;
+    height: 2px;
+    background-color: var(--primary-foreground-color);
+    position: relative;
+    box-shadow: 0 4px 0 var(--primary-foreground-color), 0 -4px 0 var(--primary-foreground-color);
+}
+
+.catalog-title {
+    flex: 1;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--primary-foreground-color);
+    font-size: 1rem;
+}
+
+.catalog-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.catalog-toggle {
+    flex-shrink: 0;
+}
+
+.hero-button {
+    padding: 0.25rem 1rem;
+    min-width: auto;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background-color: transparent;
+    border: 1px solid var(--primary-foreground-color);
+    color: var(--primary-foreground-color);
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: none;
+    opacity: 0.5;
+    
+    &.hero-active {
+        background-color: var(--secondary-accent-color);
+        border-color: var(--secondary-accent-color);
+        color: var(--primary-foreground-color);
+        opacity: 1;
+    }
+    
+    &.disabled {
+        opacity: 0.2;
+        cursor: not-allowed;
+        pointer-events: none;
+        border-color: var(--color-text-secondary);
+        color: var(--color-text-secondary);
+    }
+}
+
+.empty-state {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--color-text-secondary);
+    background-color: var(--overlay-color);
+    border-radius: 0.5rem;
+    border: 1px dashed var(--color-border);
+    max-width: 35rem;
+}

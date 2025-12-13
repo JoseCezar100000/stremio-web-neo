@@ -22,6 +22,21 @@ const translations = Object.fromEntries(Object.entries(stremioTranslations()).ma
     translation: value
 }]));
 
+// Add Home Screen settings translations
+if (translations['en-US']) {
+    Object.assign(translations['en-US'].translation, {
+        "SETTINGS_NAV_HOME_SCREEN": "Home Screen",
+        "SETTINGS_HOME_SCREEN_ENABLE_HERO": "Enable Hero Section",
+        "SETTINGS_HOME_SCREEN_CATALOGS": "Catalogs",
+        "SETTINGS_HOME_SCREEN_ENABLE_CATALOG": "Enable",
+        "SETTINGS_HOME_SCREEN_SHOW_IN_HERO": "Show in Hero",
+        "SETTINGS_HOME_SCREEN_NO_CATALOGS": "No catalogs available",
+        "SETTINGS_HOME_SCREEN_MOVE_UP": "Move Up",
+        "SETTINGS_HOME_SCREEN_MOVE_DOWN": "Move Down",
+        "SETTINGS_HOME_SCREEN_DRAG_HANDLE": "Drag to reorder"
+    });
+}
+
 i18n
     .use(initReactI18next)
     .init({

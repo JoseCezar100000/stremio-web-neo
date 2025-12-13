@@ -8,6 +8,8 @@ const { useStreamingServer, useNotifications, withCoreSuspender, getVisibleChild
 const { ContinueWatchingItem, EventModal, MainNavBars, MetaItem, MetaRow } = require('stremio/components');
 const useBoard = require('./useBoard');
 const useContinueWatchingPreview = require('./useContinueWatchingPreview');
+const applyCatalogPreferences = require('./applyCatalogPreferences').default;
+const useCatalogPreferences = require('stremio/common/useCatalogPreferences').default;
 const styles = require('./styles');
 const { default: StreamingServerWarning } = require('./StreamingServerWarning');
 const HeroShelf = require('./HeroShelf');
@@ -43,23 +45,16 @@ const Board = () => {
         loadBoardRows({ start, end });
     }, [boardCatalogsOffset]);
     const onScroll = React.useCallback(debounce(onVisibleRangeChange, 250), [onVisibleRangeChange]);
+    const catalogPrefs = useCatalogPreferences();
+    const preferencesResult = React.useMemo(() => {
+        return applyCatalogPreferences(board.catalogs, catalogPrefs.preferences);
+    }, [board.catalogs, catalogPrefs.preferences]);
     const heroItems = React.useMemo(() => {
-        const items = [];
-        board.catalogs.forEach((catalog) => {
-            if (catalog.content?.type === 'Ready' && Array.isArray(catalog.content.content)) {
-                catalog.content.content.forEach((item) => {
-                    if (item && 
-                        typeof item.background === 'string' && 
-                        item.background.length > 0 &&
-                        typeof item.logo === 'string' && 
-                        item.logo.length > 0) {
-                        items.push(item);
-                    }
-                });
-            }
-        });
-        return items.slice(0, 10); // Limit to 10 items
-    }, [board.catalogs]);
+        return preferencesResult.heroItems;
+    }, [preferencesResult.heroItems]);
+    const filteredCatalogs = React.useMemo(() => {
+        return preferencesResult.filteredCatalogs;
+    }, [preferencesResult.filteredCatalogs]);
 
     const sourceItems = React.useMemo(() => {
         return continueWatchingPreview?.items ?? continueWatchingPreview?.content?.content ?? [];
@@ -116,7 +111,7 @@ const Board = () => {
             <EventModal />
             <MainNavBars className={styles['board-content-container']} route={'board'}>
                 <div ref={scrollContainerRef} className={styles['board-content']} onScroll={onScroll}>
-                    <HeroShelf items={heroItems.length > 0 ? heroItems : undefined} />
+                    {preferencesResult.heroSectionEnabled && heroItems.length > 0 && <HeroShelf items={heroItems} />}
                     {
                         (continueWatchingPreview?.items?.length > 0 || (continueWatchingPreview?.content?.content && Array.isArray(continueWatchingPreview.content.content) && continueWatchingPreview.content.content.length > 0)) ?
                             isLoadingMetaDetails ?
@@ -139,7 +134,7 @@ const Board = () => {
                             :
                             null
                     }
-                    {board.catalogs.map((catalog, index) => {
+                    {filteredCatalogs.map((catalog, index) => {
                         switch (catalog.content?.type) {
                             case 'Ready': {
                                 return (
