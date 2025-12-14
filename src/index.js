@@ -35,7 +35,11 @@ if (translations['en-US']) {
         "SETTINGS_HOME_SCREEN_MOVE_DOWN": "Move Down",
         "SETTINGS_HOME_SCREEN_DRAG_HANDLE": "Drag to reorder",
         "SETTINGS_NAV_DATA_ENRICHMENT": "Data Enrichment",
-        "SETTINGS_DATA_ENRICHMENT_TMDB_API_KEY": "TMDB API Key"
+        "SETTINGS_DATA_ENRICHMENT_TMDB_API_KEY": "TMDB API Key",
+        "SETTINGS_SECTION_TMDB": "TMDB",
+        "SETTINGS_SECTION_RATING": "Rating",
+        "SETTINGS_DATA_ENRICHMENT_SHOW_CAST": "Enhanced Cast Section",
+        "SETTINGS_DATA_ENRICHMENT_SHOW_POSTER_RATINGS": "Show Ratings on Posters"
     });
 }
 

@@ -10,12 +10,15 @@ const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
 const Multiselect = require('stremio/components/Multiselect');
 const useBinaryState = require('stremio/common/useBinaryState');
+const useProfile = require('stremio/common/useProfile');
 const { ICON_FOR_TYPE } = require('stremio/common/CONSTANTS');
 const styles = require('./styles');
 
 const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, background, logo, links, ...props }) => {
     const { t } = useTranslation();
+    const profile = useProfile();
     const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
+    const showPosterRatings = profile.settings.showPosterRatings ?? true;
     const imdbRating = React.useMemo(() => {
         if (!Array.isArray(links)) return null;
         const imdbLink = links.find(l => l.category === 'imdb');
@@ -188,7 +191,7 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                         null
                 }
                 {
-                    imdbRating ?
+                    showPosterRatings && imdbRating ?
                         <div className={styles['rating-badge']}>
                             <Icon className={styles['rating-icon']} name={'star'} />
                             <div className={styles['rating-value']}>{imdbRating}</div>

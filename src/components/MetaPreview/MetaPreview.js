@@ -13,6 +13,7 @@ const SharePrompt = require('stremio/components/SharePrompt');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const routesRegexp = require('stremio/common/routesRegexp');
 const useBinaryState = require('stremio/common/useBinaryState');
+const useProfile = require('stremio/common/useProfile');
 const ActionButton = require('./ActionButton');
 const MetaLinks = require('./MetaLinks');
 const MetaPreviewPlaceholder = require('./MetaPreviewPlaceholder');
@@ -28,7 +29,9 @@ const ALLOWED_LINK_REDIRECTS = [
 
 const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo, tmdbCast }, ref) => {
     const { t } = useTranslation();
+    const profile = useProfile();
     const [shareModalOpen, openShareModal, closeShareModal] = useBinaryState(false);
+    const showTmdbCast = profile.settings.showTmdbCast ?? true;
     const linksGroups = React.useMemo(() => {
         return Array.isArray(links) ?
             links
@@ -308,31 +311,33 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                 )}
                 
                 {/* Cast */}
-                {tmdbCast && tmdbCast.length > 0 ? (
-                    <Cast cast={tmdbCast} />
-                ) : (
-                    castLinks.length > 0 && (
-                        <div className={styles['crew-section']}>
-                            <div className={styles['crew-label']}>CAST</div>
-                            <div className={styles['crew-pills']}>
-                                {castLinks.slice(0, 10).map((link, index) => (
-                                    link.href ? (
-                                        <Button
-                                            key={index}
-                                            className={styles['crew-pill']}
-                                            href={link.href}
-                                            title={link.label}
-                                        >
-                                            {link.label}
-                                        </Button>
-                                    ) : (
-                                        <span key={index} className={styles['crew-pill']}>
-                                            {link.label}
-                                        </span>
-                                    )
-                                ))}
+                {showTmdbCast && (
+                    tmdbCast && tmdbCast.length > 0 ? (
+                        <Cast cast={tmdbCast} />
+                    ) : (
+                        castLinks.length > 0 && (
+                            <div className={styles['crew-section']}>
+                                <div className={styles['crew-label']}>CAST</div>
+                                <div className={styles['crew-pills']}>
+                                    {castLinks.slice(0, 10).map((link, index) => (
+                                        link.href ? (
+                                            <Button
+                                                key={index}
+                                                className={styles['crew-pill']}
+                                                href={link.href}
+                                                title={link.label}
+                                            >
+                                                {link.label}
+                                            </Button>
+                                        ) : (
+                                            <span key={index} className={styles['crew-pill']}>
+                                                {link.label}
+                                            </span>
+                                        )
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )
                     )
                 )}
                 

@@ -44,6 +44,8 @@ type Settings = {
     subtitlesTextColor: string,
     surroundSound: boolean,
     pauseOnMinimize: boolean,
+    showTmdbCast: boolean,
+    showPosterRatings: boolean,
 };
 
 type Profile = {
