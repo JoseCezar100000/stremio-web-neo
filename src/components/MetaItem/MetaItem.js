@@ -13,9 +13,16 @@ const useBinaryState = require('stremio/common/useBinaryState');
 const { ICON_FOR_TYPE } = require('stremio/common/CONSTANTS');
 const styles = require('./styles');
 
-const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, background, logo, ...props }) => {
+const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, background, logo, links, ...props }) => {
     const { t } = useTranslation();
     const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
+    const imdbRating = React.useMemo(() => {
+        if (!Array.isArray(links)) return null;
+        const imdbLink = links.find(l => l.category === 'imdb');
+        if (!imdbLink || !imdbLink.name) return null;
+        const ratingMatch = imdbLink.name.match(/(\d+\.?\d*)/);
+        return ratingMatch ? ratingMatch[1] : null;
+    }, [links]);
     const href = React.useMemo(() => {
         return deepLinks ?
             typeof deepLinks.player === 'string' ?
@@ -180,6 +187,15 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                         :
                         null
                 }
+                {
+                    imdbRating ?
+                        <div className={styles['rating-badge']}>
+                            <Icon className={styles['rating-icon']} name={'star'} />
+                            <div className={styles['rating-value']}>{imdbRating}</div>
+                        </div>
+                        :
+                        null
+                }
             </div>
             {
                 (typeof name === 'string' && name.length > 0) || (Array.isArray(options) && options.length > 0) ?
@@ -234,7 +250,8 @@ MetaItem.propTypes = {
     onClick: PropTypes.func,
     watched: PropTypes.bool,
     background: PropTypes.string,
-    logo: PropTypes.string
+    logo: PropTypes.string,
+    links: PropTypes.array
 };
 
 module.exports = MetaItem;

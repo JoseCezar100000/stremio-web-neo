@@ -398,6 +398,34 @@
                 }
             }
         }
+
+        .rating-badge {
+            z-index: -1;
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(3px);
+            border-radius: var(--border-radius);
+
+            .rating-icon {
+                height: 0.9rem;
+                width: 0.9rem;
+                color: var(--primary-foreground-color);
+                opacity: 0.9;
+            }
+
+            .rating-value {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: var(--primary-foreground-color);
+                line-height: 1;
+            }
+        }
     }
 
     .title-bar-container {
