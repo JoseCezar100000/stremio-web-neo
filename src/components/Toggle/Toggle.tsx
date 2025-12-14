@@ -13,9 +13,9 @@ type Props = {
     children?: React.ReactNode,
 };
 
-const Toggle = forwardRef(({ className, checked, children, ...props }: Props, ref) => {
+const Toggle = forwardRef(({ className, checked, disabled, children, ...props }: Props, ref) => {
     return (
-        <Button {...props} ref={ref} className={classnames(className, styles['toggle-container'], { 'checked': checked })}>
+        <Button {...props} ref={ref} disabled={disabled} className={classnames(className, styles['toggle-container'], { 'checked': checked, 'disabled': disabled })}>
             <div className={styles['toggle']} />
             {children}
         </Button>

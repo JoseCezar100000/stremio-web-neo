@@ -23,7 +23,7 @@ type Props = {
     onDoubleClick?: () => void,
 };
 
-const Button = forwardRef(({ className, href, disabled, children, onLongPress, onDoubleClick, ...props }: Props, ref) => {
+const Button = forwardRef(({ className, href, disabled, children, onLongPress, onDoubleClick, onClick, ...props }: Props, ref) => {
     const longPress = useLongPress(onLongPress!, { detect: LongPressEventType.Pointer });
 
     const onKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -57,11 +57,12 @@ const Button = forwardRef(({ className, href, disabled, children, onLongPress, o
     return createElement(
         typeof href === 'string' && href.length > 0 ? 'a' : 'div',
         {
-            tabIndex: 0,
             ...props,
             ref,
+            tabIndex: props.tabIndex !== undefined ? props.tabIndex : 0,
             className: classNames(className, styles['button-container'], { 'disabled': disabled }),
             href,
+            onClick,
             onKeyDown,
             onMouseDown,
             onDoubleClick,

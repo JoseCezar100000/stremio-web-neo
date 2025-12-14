@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useServices } from 'stremio/services';
 import { getTMDBApiKey, setTMDBApiKey } from 'stremio/common/tmdbApi';
+import { useDataEnrichmentPrefs } from 'stremio/common/dataEnrichmentPrefs';
 
 type Props = {
     profile: Profile,
@@ -9,6 +10,7 @@ type Props = {
 const useDataEnrichmentOptions = ({ profile }: Props) => {
     const { core } = useServices();
     const [apiKey, setApiKeyState] = useState(() => getTMDBApiKey() || '');
+    const { showTmdbCast, showPosterRatings, setShowTmdbCast, setShowPosterRatings } = useDataEnrichmentPrefs();
 
     useEffect(() => {
         const handleStorageChange = () => {
@@ -18,57 +20,56 @@ const useDataEnrichmentOptions = ({ profile }: Props) => {
         return () => window.removeEventListener('storage', handleStorageChange);
     }, []);
 
-    const apiKeyInput = useMemo(() => ({
-        value: apiKey,
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            const newValue = e.target.value;
-            setApiKeyState(newValue);
-            setTMDBApiKey(newValue);
-        }
-    }), [apiKey]);
+    const refreshApiKey = useCallback(() => {
+        setApiKeyState(getTMDBApiKey() || '');
+    }, []);
 
-    const onShowTmdbCastToggle = useCallback(() => {
-        const currentValue = profile.settings.showTmdbCast ?? true;
-        core.transport.dispatch({
-            action: 'Ctx',
-            args: {
-                action: 'UpdateSettings',
-                args: {
-                    ...profile.settings,
-                    showTmdbCast: !currentValue,
+    const showTmdbCastToggle = useMemo(() => {
+        const hasApiKey = apiKey && apiKey.trim().length > 0;
+        return {
+            checked: showTmdbCast,
+            disabled: !hasApiKey,
+            onClick: () => {
+                if (hasApiKey) {
+                    setShowTmdbCast(!showTmdbCast);
+                    core.transport.dispatch({
+                        action: 'Ctx',
+                        args: {
+                            action: 'UpdateSettings',
+                            args: {
+                                ...profile.settings,
+                                showTmdbCast: !showTmdbCast,
+                            }
+                        }
+                    });
                 }
             }
-        });
-    }, [profile.settings, core]);
+        };
+    }, [profile.settings, apiKey, showTmdbCast, setShowTmdbCast, core]);
 
-    const onShowPosterRatingsToggle = useCallback(() => {
-        const currentValue = profile.settings.showPosterRatings ?? true;
-        core.transport.dispatch({
-            action: 'Ctx',
-            args: {
-                action: 'UpdateSettings',
-                args: {
-                    ...profile.settings,
-                    showPosterRatings: !currentValue,
-                }
+    const showPosterRatingsToggle = useMemo(() => {
+        return {
+            checked: showPosterRatings,
+            onClick: () => {
+                setShowPosterRatings(!showPosterRatings);
+                core.transport.dispatch({
+                    action: 'Ctx',
+                    args: {
+                        action: 'UpdateSettings',
+                        args: {
+                            ...profile.settings,
+                            showPosterRatings: !showPosterRatings,
+                        }
+                    }
+                });
             }
-        });
-    }, [profile.settings, core]);
-
-    const showTmdbCastToggle = useMemo(() => ({
-        checked: profile.settings.showTmdbCast ?? true,
-        onClick: onShowTmdbCastToggle,
-    }), [profile.settings.showTmdbCast, onShowTmdbCastToggle]);
-
-    const showPosterRatingsToggle = useMemo(() => ({
-        checked: profile.settings.showPosterRatings ?? true,
-        onClick: onShowPosterRatingsToggle,
-    }), [profile.settings.showPosterRatings, onShowPosterRatingsToggle]);
+        };
+    }, [profile.settings, showPosterRatings, setShowPosterRatings, core]);
 
     return {
-        apiKeyInput,
         showTmdbCastToggle,
         showPosterRatingsToggle,
+        refreshApiKey,
     };
 };
 

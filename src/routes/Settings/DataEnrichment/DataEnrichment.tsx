@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
-import { TextInput, Toggle } from 'stremio/components';
+import { Toggle } from 'stremio/components';
 import { Section, Category, Option } from '../components';
 import useDataEnrichmentOptions from './useDataEnrichmentOptions';
-import styles from './DataEnrichment.less';
+import APIKeyManager from './APIKeyManager';
 
 type Props = {
     profile: Profile,
@@ -10,25 +10,15 @@ type Props = {
 
 const DataEnrichment = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const {
-        apiKeyInput,
         showTmdbCastToggle,
         showPosterRatingsToggle,
+        refreshApiKey,
     } = useDataEnrichmentOptions({ profile });
 
     return (
         <Section ref={ref} label={'SETTINGS_NAV_DATA_ENRICHMENT'}>
             <Category icon={'image'} label={'SETTINGS_SECTION_TMDB'}>
-                <Option label={'SETTINGS_DATA_ENRICHMENT_TMDB_API_KEY'}>
-                    <div className={styles['api-key-container']}>
-                        <TextInput
-                            className={styles['api-key-input']}
-                            value={apiKeyInput.value}
-                            onChange={apiKeyInput.onChange}
-                            placeholder={'Enter TMDB API Key'}
-                            type={'password'}
-                        />
-                    </div>
-                </Option>
+                <APIKeyManager onKeySavedChange={refreshApiKey} />
                 <Option label={'SETTINGS_DATA_ENRICHMENT_SHOW_CAST'}>
                     <Toggle
                         tabIndex={-1}

@@ -14,6 +14,7 @@ const CONSTANTS = require('stremio/common/CONSTANTS');
 const routesRegexp = require('stremio/common/routesRegexp');
 const useBinaryState = require('stremio/common/useBinaryState');
 const useProfile = require('stremio/common/useProfile');
+const { useDataEnrichmentPrefs } = require('stremio/common/dataEnrichmentPrefs');
 const ActionButton = require('./ActionButton');
 const MetaLinks = require('./MetaLinks');
 const MetaPreviewPlaceholder = require('./MetaPreviewPlaceholder');
@@ -31,7 +32,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
     const { t } = useTranslation();
     const profile = useProfile();
     const [shareModalOpen, openShareModal, closeShareModal] = useBinaryState(false);
-    const showTmdbCast = profile.settings.showTmdbCast ?? true;
+    const { showTmdbCast } = useDataEnrichmentPrefs();
     const linksGroups = React.useMemo(() => {
         return Array.isArray(links) ?
             links

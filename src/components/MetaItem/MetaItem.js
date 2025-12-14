@@ -11,6 +11,7 @@ const { default: Image } = require('stremio/components/Image');
 const Multiselect = require('stremio/components/Multiselect');
 const useBinaryState = require('stremio/common/useBinaryState');
 const useProfile = require('stremio/common/useProfile');
+const { useDataEnrichmentPrefs } = require('stremio/common/dataEnrichmentPrefs');
 const { ICON_FOR_TYPE } = require('stremio/common/CONSTANTS');
 const styles = require('./styles');
 
@@ -18,7 +19,7 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
     const { t } = useTranslation();
     const profile = useProfile();
     const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
-    const showPosterRatings = profile.settings.showPosterRatings ?? true;
+    const { showPosterRatings } = useDataEnrichmentPrefs();
     const imdbRating = React.useMemo(() => {
         if (!Array.isArray(links)) return null;
         const imdbLink = links.find(l => l.category === 'imdb');

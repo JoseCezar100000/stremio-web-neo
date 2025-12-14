@@ -39,12 +39,14 @@ const useHomeScreenOptions = () => {
         const originalIndex = catalogs.indexOf(catalog);
         const isHeroEnabled = pref?.showInHero ?? (originalIndex === 0);
         const isCatalogEnabled = pref ? pref.enabled : true;
+        const heroSectionEnabled = catalogPrefs.getHeroSectionEnabled();
+        const disabled = !isCatalogEnabled || !heroSectionEnabled;
         
         return {
             checked: isHeroEnabled,
-            disabled: !isCatalogEnabled,
+            disabled,
             onClick: () => {
-                if (!isCatalogEnabled) return;
+                if (disabled) return;
                 catalogPrefs.setCatalogPreference(catalog, {
                     showInHero: !isHeroEnabled,
                 });

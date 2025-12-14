@@ -39,7 +39,8 @@ if (translations['en-US']) {
         "SETTINGS_SECTION_TMDB": "TMDB",
         "SETTINGS_SECTION_RATING": "Rating",
         "SETTINGS_DATA_ENRICHMENT_SHOW_CAST": "Enhanced Cast Section",
-        "SETTINGS_DATA_ENRICHMENT_SHOW_POSTER_RATINGS": "Show Ratings on Posters"
+        "SETTINGS_DATA_ENRICHMENT_SHOW_POSTER_RATINGS": "Show Ratings on Posters",
+        "SETTINGS_DATA_ENRICHMENT_ADD_KEY": "Add Key"
     });
 }
 

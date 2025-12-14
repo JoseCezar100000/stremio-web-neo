@@ -41,4 +41,20 @@
             }
         }
     }
+
+    &:global(.disabled) {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        .toggle {
+            background-color: var(--overlay-color);
+            opacity: 0.5;
+        }
+
+        &:global(.checked) {
+            .toggle {
+                background-color: var(--overlay-color);
+            }
+        }
+    }
 }
