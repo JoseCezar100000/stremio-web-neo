@@ -3,6 +3,7 @@
 import { useCallback, useState, useEffect } from 'react';
 
 const STORAGE_KEY = 'stremio_catalog_preferences';
+const EVENT_NAME = 'stremio-catalog-preferences-changed';
 
 type CatalogPreference = {
     enabled: boolean;
@@ -52,6 +53,7 @@ const savePreferences = (preferences: StoredPreferences): void => {
     } catch (error) {
         console.error('Failed to save catalog preferences:', error);
     }
+    window.dispatchEvent(new Event(EVENT_NAME));
 };
 
 export const getCatalogId = (catalog: any): string | null => {
@@ -75,7 +77,11 @@ const useCatalogPreferences = () => {
             setPreferences(getStoredPreferences());
         };
         window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange);
+        window.addEventListener(EVENT_NAME, handleStorageChange);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener(EVENT_NAME, handleStorageChange);
+        };
     }, []);
 
     const updatePreferences = useCallback((updater: (prev: StoredPreferences) => StoredPreferences) => {

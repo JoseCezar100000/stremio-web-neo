@@ -4,7 +4,7 @@ const React = require('react');
 const { useServices } = require('stremio/services');
 const { useModelState } = require('stremio/common');
 
-const useBoard = () => {
+const useBoard = (modelKey = 'board') => {
     const { core } = useServices();
     const action = React.useMemo(() => ({
         action: 'Load',
@@ -20,9 +20,9 @@ const useBoard = () => {
                 action: 'LoadRange',
                 args: range
             }
-        }, 'board');
-    }, []);
-    const board = useModelState({ model: 'board', action });
+        }, modelKey);
+    }, [core, modelKey]);
+    const board = useModelState({ model: modelKey, action });
     return [board, loadRange];
 };
 

@@ -8,6 +8,8 @@ const { useCoreSuspender } = require('stremio/common/CoreSuspender');
 const { useRouteFocused } = require('stremio-router');
 const { useServices } = require('stremio/services');
 
+const subscribersCountByModel = new Map();
+
 const useModelState = ({ action, ...args }) => {
     const { core } = useServices();
     const routeFocused = useRouteFocused();
@@ -38,8 +40,15 @@ const useModelState = ({ action, ...args }) => {
         }
     }, [action]);
     React.useInsertionEffect(() => {
+        subscribersCountByModel.set(model, (subscribersCountByModel.get(model) || 0) + 1);
         return () => {
-            core.transport.dispatch({ action: 'Unload' }, model);
+            const nextCount = (subscribersCountByModel.get(model) || 1) - 1;
+            if (nextCount <= 0) {
+                subscribersCountByModel.delete(model);
+                core.transport.dispatch({ action: 'Unload' }, model);
+            } else {
+                subscribersCountByModel.set(model, nextCount);
+            }
         };
     }, []);
     React.useInsertionEffect(() => {
