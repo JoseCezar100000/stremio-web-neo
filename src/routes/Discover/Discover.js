@@ -344,6 +344,7 @@ const Discover = ({ urlParams, queryParams }) => {
                                                 playname={selectedMetaItemIndex === index}
                                                 deepLinks={metaItem.deepLinks}
                                                 watched={metaItem.watched}
+                                                links={metaItem.links}
                                                 data-index={index}
                                                 onClick={metaItemOnClick}
                                             />
