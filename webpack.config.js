@@ -250,7 +250,7 @@ module.exports = (env, argv) => ({
         }),
         new WebpackPwaManifest({
             name: 'Stremio Web',
-            short_name: 'Stremio',
+            short_name: 'Stremio Neo',
             description: 'Freedom To Stream',
             background_color: '#161523',
             theme_color: '#2a2843',
