@@ -82,7 +82,7 @@ const applyCatalogPreferences = (
 
     return {
         filteredCatalogs,
-        heroItems: heroItems.slice(0, 10), // Limit to 10 items
+        heroItems,
         heroSectionEnabled: preferences.heroSectionEnabled ?? true,
     };
 };

@@ -19,14 +19,13 @@ const HeroShelf = ({ items }) => {
         }
         // Filter items that have both background and logo
         return items
-            .filter((item) => 
-                item && 
-                typeof item.background === 'string' && 
+            .filter((item) =>
+                item &&
+                typeof item.background === 'string' &&
                 item.background.length > 0 &&
-                typeof item.logo === 'string' && 
+                typeof item.logo === 'string' &&
                 item.logo.length > 0
-            )
-            .slice(0, 10); // Limit to 10 items
+            );
     }, [items]);
 
     const nextSlide = React.useCallback(() => {
