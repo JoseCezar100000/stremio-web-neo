@@ -1,0 +1,226 @@
+.wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 35rem;
+    margin-bottom: 2rem;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 3rem;
+        align-items: center;
+        
+        .label {
+            font-size: 1rem;
+            color: var(--primary-foreground-color);
+            font-weight: 400;
+            opacity: 0.6;
+
+            &:last-of-type {
+                padding-right: 3rem;
+            }
+        }
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem 0;
+    }
+
+    .item {
+        display: flex;
+        padding: 0.7rem 1.5rem;
+        border-radius: 2.5rem;
+        transition: 0.3s all ease-in-out;
+        background-color: var(--overlay-color);
+        border: 2px solid transparent;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+    }
+
+    .content-row {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        flex: 1 1 auto;
+        max-width: 60%;
+    }
+
+    .name-button {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+    }
+
+    .name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--primary-foreground-color);
+        opacity: 0.9;
+    }
+
+    .edit-input {
+        background-color: var(--overlay-color);
+        border-radius: var(--border-radius);
+        color: var(--primary-foreground-color);
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--primary-foreground-color);
+        width: 100%;
+    }
+
+    .actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex: none;
+        padding-right: 4rem;
+    }
+
+    .role {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .role-label {
+        font-size: 1rem;
+        color: var(--primary-foreground-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .edit-actions {
+        display: flex;
+        gap: 0.25rem;
+        align-items: center;
+    }
+
+    .edit-confirm, .edit-cancel {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.25rem;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        transition: 0.3s all ease-in-out;
+        border-radius: var(--border-radius);
+        width: 3rem;
+        opacity: 0.6;
+
+        &:hover {
+            opacity: 1;
+            background-color: var(--overlay-color);
+        }
+    }
+
+    .edit-confirm:hover .edit-icon {
+        color: var(--secondary-accent-color);
+    }
+
+    .edit-cancel:hover .edit-icon {
+        color: var(--color-trakt);
+    }
+
+    .edit-icon {
+        width: 2rem;
+        height: 2rem;
+        color: var(--primary-foreground-color);
+    }
+
+    .delete {
+        position: absolute;
+        display: flex;
+        right: 1.5rem;
+        top: 50%;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        transition: 0.3s all ease-in-out;
+        border-radius: var(--border-radius);
+        transform: translateY(-50%);
+        width: 3rem;
+        padding: 0.5rem 0.25rem;
+
+        .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            opacity: 0;
+            transition: 0.3s all ease-in-out;
+            color: var(--primary-foreground-color);
+        }
+
+        &:hover, &:focus {
+            background-color: var(--overlay-color);
+
+            .icon {
+                color: var(--color-trakt);
+                opacity: 1 !important;
+            }
+        }
+    }
+
+    .icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        opacity: 0.6;
+        transition: 0.3s all ease-in-out;
+        color: var(--primary-foreground-color);
+    }
+
+    .item:hover {
+        border: 2px solid var(--overlay-color);
+
+        .actions {
+            .delete {
+                .icon {
+                    opacity: 0.6;
+                }
+            }
+        }
+    }
+
+    .footer {
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 0;
+
+        .add-profile {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.5rem;
+            background-color: var(--secondary-accent-color);
+            transition: 0.3s all ease-in-out;
+            border-radius: 1.5rem;
+            color: var(--primary-foreground-color);
+            border: 2px solid transparent;
+
+            .add-icon {
+                width: 1rem;
+                height: 1rem;
+                color: var(--primary-foreground-color);
+            }
+
+            &:hover {
+                background-color: transparent;
+                border: 2px solid var(--primary-foreground-color);
+            }
+        }
+    }
+}
+
+
