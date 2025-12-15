@@ -42,12 +42,14 @@ const Calendar = ({ urlParams }: Props) => {
                                 selectable={calendar.selectable}
                                 profile={profile}
                             />
-                            <Table
-                                items={calendar.items}
-                                selected={selected}
-                                monthInfo={calendar.monthInfo}
-                                onChange={setSelected}
-                            />
+                            <div className={styles['tableWrap']}>
+                                <Table
+                                    items={calendar.items}
+                                    selected={selected}
+                                    monthInfo={calendar.monthInfo}
+                                    onChange={setSelected}
+                                />
+                            </div>
                         </div>
                         <List
                             items={calendar.items}

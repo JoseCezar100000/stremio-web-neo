@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import Icon from '@stremio/stremio-icons/react';
 import classNames from 'classnames';
-import { Button } from 'stremio/components';
+import { Button, Image } from 'stremio/components';
 import useCalendarDate from '../../useCalendarDate';
 import styles from './Item.less';
 
@@ -24,6 +24,13 @@ const Item = ({ selected, monthInfo, date, items, profile, onClick }: Props) => 
         date.day === selected?.day,
         date.day === monthInfo.today,
     ], [selected, monthInfo, date]);
+
+    const airingTag = useMemo(() => {
+        if (monthInfo.today === null) return null;
+        if (date.day === monthInfo.today) return 'Airing Today';
+        if (date.day === monthInfo.today + 1) return 'Airing Tomorrow';
+        return null;
+    }, [date.day, monthInfo.today]);
 
     const onItemClick = () => {
         onClick && onClick(date);
@@ -48,13 +55,35 @@ const Item = ({ selected, monthInfo, date, items, profile, onClick }: Props) => 
             </div>
             <div className={styles['body']}>
                 {
-                    items.map(({ id, name, season, episode, deepLinks }) => (
+                    items.map(({ id, name, title, poster, season, episode, deepLinks }) => (
                         <Button className={styles['video']} key={id} href={deepLinks.metaDetailsStreams}>
-                            <div className={styles['name']}>
-                                {name}
+                            <div className={styles['posterWrap']}>
+                                {
+                                    typeof poster === 'string' && poster.length > 0 ?
+                                        <Image className={styles['poster']} src={poster} alt={name} />
+                                        :
+                                        <div className={styles['posterPlaceholder']} />
+                                }
                             </div>
-                            <div className={styles['info']}>
-                                S{season}E{episode}
+                            <div className={styles['meta']}>
+                                <div className={styles['nameRow']}>
+                                    <div className={styles['name']}>{name}</div>
+                                    {
+                                        airingTag ?
+                                            <div className={styles['tag']}>{airingTag}</div>
+                                            :
+                                            null
+                                    }
+                                </div>
+                                <div className={styles['subRow']}>
+                                    <div className={styles['info']}>S{season}E{episode}</div>
+                                    {
+                                        typeof title === 'string' && title.length > 0 ?
+                                            <div className={styles['episodeTitle']}>{title}</div>
+                                            :
+                                            null
+                                    }
+                                </div>
                             </div>
                             <Icon className={styles['icon']} name={'play'} />
                         </Button>

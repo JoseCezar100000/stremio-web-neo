@@ -1,6 +1,7 @@
 // Copyright (C) 2017-2024 Smart code 203358507
 
 import React, { useMemo } from 'react';
+import { CalendarDays } from 'lucide-react';
 import { Item, ItemPlaceholder } from './Item';
 import styles from './List.less';
 
@@ -19,6 +20,13 @@ const List = ({ items, selected, monthInfo, profile, onChange }: Props) => {
 
     return (
         <div className={styles['list']}>
+            <div className={styles['header']}>
+                <div className={styles['headerText']}>
+                    <div className={styles['headerTitle']}>Up Next</div>
+                    <div className={styles['headerSubtitle']}>Your schedule</div>
+                </div>
+                <CalendarDays className={styles['headerIcon']} />
+            </div>
             {
                 items.length === 0 ?
                     [1, 2, 3].map((index) => (
