@@ -133,7 +133,7 @@ const HomeScreen = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) =
                                             disabled={heroButton.disabled}
                                             tabIndex={-1}
                                         >
-                                            <span className={styles['hero-label']}>Hero</span>
+                                            <span className={styles['hero-label']}>{t.string('HERO')}</span>
                                         </Button>
                                         <Toggle
                                             className={styles['catalog-toggle']}

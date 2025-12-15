@@ -7,6 +7,7 @@ const { Button } = require('stremio/components');
 const { useInterval } = require('stremio/common');
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const styles = require('./styles');
+const { t } = require('i18next');
 
 const HeroShelf = ({ items }) => {
     const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -157,7 +158,7 @@ const HeroShelf = ({ items }) => {
                                 <div className={styles['metadata-row']}>
                                     {imdbRating && (
                                         <div className={styles['badge-imdb']}>
-                                            <span className={styles['imdb-label']}>IMDb</span>
+                                            <span className={styles['imdb-label']}>{t('IMDB')}</span>
                                             <span className={styles['imdb-rating']}>{imdbRating}</span>
                                         </div>
                                     )}
@@ -178,27 +179,27 @@ const HeroShelf = ({ items }) => {
                                     <Button
                                         className={classnames(styles['action-button'], styles['primary'])}
                                         href={item.deepLinks?.metaDetailsVideos ?? item.deepLinks?.metaDetailsStreams ?? null}
-                                        title={'Watch Now'}
+                                        title={t('WATCH_NOW')}
                                     >
                                         <Icon className={styles['icon']} name={'play'} />
-                                        <span className={styles['label']}>Watch Now</span>
+                                        <span className={styles['label']}>{t('WATCH_NOW')}</span>
                                     </Button>
                                     {trailerHref && (
                                         <Button
                                             className={classnames(styles['action-button'], styles['secondary'], styles['trailer-button'])}
                                             href={trailerHref}
-                                            title={'Trailer'}
+                                            title={t('TRAILER')}
                                         >
                                             <Icon className={styles['icon']} name={'trailer'} />
-                                            <span className={styles['label']}>Trailer</span>
+                                            <span className={styles['label']}>{t('TRAILER')}</span>
                                         </Button>
                                     )}
                                     <Button
                                         className={classnames(styles['action-button'], styles['secondary'])}
-                                        title={'My List'}
+                                        title={t('MY_LIST')}
                                     >
                                         <Icon className={styles['icon']} name={'add'} />
-                                        <span className={styles['label']}>My List</span>
+                                        <span className={styles['label']}>{t('MY_LIST')}</span>
                                     </Button>
                                 </div>
                             </div>

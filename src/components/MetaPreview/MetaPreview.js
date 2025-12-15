@@ -221,7 +221,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                 {imdbRating && (
                     <div className={styles['imdb-rating-row']}>
                         <div className={styles['badge-imdb']}>
-                            <span className={styles['imdb-label']}>IMDb</span>
+                            <span className={styles['imdb-label']}>{t('IMDB')}</span>
                             <span className={styles['imdb-rating']}>{imdbRating}</span>
                         </div>
                     </div>
@@ -289,7 +289,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                 {/* Director */}
                 {directorLinks.length > 0 && (
                     <div className={styles['crew-section']}>
-                        <div className={styles['crew-label']}>DIRECTOR</div>
+                        <div className={styles['crew-label']}>{t('DIRECTOR')}</div>
                         <div className={styles['crew-pills']}>
                             {directorLinks.map((link, index) => (
                                 link.href ? (
@@ -318,7 +318,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                     ) : (
                         castLinks.length > 0 && (
                             <div className={styles['crew-section']}>
-                                <div className={styles['crew-label']}>CAST</div>
+                                <div className={styles['crew-label']}>{t('CAST')}</div>
                                 <div className={styles['crew-pills']}>
                                     {castLinks.slice(0, 10).map((link, index) => (
                                         link.href ? (

@@ -25,7 +25,7 @@
         height: 100%;
         margin-bottom: calc(var(--bottom-overlay-size) * -1);
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
 
         .catalog-container {
             flex: 1;
@@ -178,8 +178,8 @@
                 grid-auto-rows: max-content;
                 align-items: center;
                 grid-gap: 0.35rem;
-                margin-right: 1.5rem;
                 overflow-y: auto;
+                position: relative;
 
                 .meta-item-placeholder {
                     padding: 0.7rem;
@@ -208,14 +208,36 @@
                 }
             }
         }
+    }
+}
 
-        .meta-preview-container {
-            flex: none;
-            align-self: stretch;
-            width: 29rem;
-            padding: 2rem 2.5rem;
-            border-radius: var(--border-radius) 0 0 var(--border-radius);
-            background-color: var(--modal-background-color);
+.dimmed {
+    filter: blur(2px);
+    opacity: 0.55;
+    transition: filter 180ms ease, opacity 180ms ease;
+}
+
+.covered {
+    opacity: 0;
+    transition: opacity 180ms ease;
+}
+
+.has-expanded {
+    :global(.meta-item-container) {
+        transition: filter 180ms ease, opacity 180ms ease;
+
+        &:hover, &:focus, &.active, &.selected {
+            .poster-container {
+                .poster-image-layer, .background-image-layer {
+                    transform: none !important;
+                }
+            }
+        }
+
+        .poster-container {
+            .poster-image-layer, .background-image-layer {
+                transition: none !important;
+            }
         }
     }
 }
@@ -248,7 +270,7 @@
     }
 }
 
-@media only screen and (min-width: @xxlarge) {
+@media only screen and (min-width: @large) {
     .discover-container {
         .discover-content {
             .catalog-container {
@@ -260,7 +282,7 @@
     }
 }
 
-@media only screen and (max-width: @xxlarge) {
+@media only screen and (max-width: @large) {
     .discover-container {
         .discover-content {
             .catalog-container {
@@ -272,36 +294,12 @@
     }
 }
 
-@media only screen and (max-width: @xlarge) {
-    .discover-container {
-        .discover-content {
-            .catalog-container {
-                .meta-items-container {
-                    grid-template-columns: repeat(5, 1fr);
-                }
-            }
-        }
-    }
-}
-
-@media only screen and (max-width: @large) {
-    .discover-container {
-        .discover-content {
-            .catalog-container {
-                .meta-items-container {
-                    grid-template-columns: repeat(5, 1fr);
-                }
-            }
-        }
-    }
-}
-
 @media only screen and (max-width: @normal) {
     .discover-container {
         .discover-content {
             .catalog-container {
                 .meta-items-container {
-                    grid-template-columns: repeat(4, 1fr);
+                    grid-template-columns: repeat(5, 1fr);
                 }
             }
         }
@@ -313,7 +311,7 @@
         .discover-content {
             .catalog-container {
                 .meta-items-container {
-                    grid-template-columns: repeat(4, 1fr);
+                    grid-template-columns: repeat(5, 1fr);
                 }
             }
         }
@@ -325,7 +323,7 @@
         .discover-content {
             .catalog-container {
                 .meta-items-container {
-                    grid-template-columns: repeat(3, 1fr);
+                    grid-template-columns: repeat(4, 1fr);
                 }
             }
         }
@@ -337,14 +335,11 @@
         .discover-content {
             .catalog-container {
                 .meta-items-container {
-                    grid-template-columns: repeat(3, 1fr);
+                    grid-template-columns: repeat(4, 1fr);
                     margin-right: 0;
                 }
             }
 
-            .meta-preview-container {
-                display: none;
-            }
         }
     }
 }
@@ -359,9 +354,6 @@
                 }
             }
 
-            .meta-preview-container {
-                display: none;
-            }
         }
     }
 }

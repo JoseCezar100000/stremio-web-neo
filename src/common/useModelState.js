@@ -45,7 +45,7 @@ const useModelState = ({ action, ...args }) => {
             const nextCount = (subscribersCountByModel.get(model) || 1) - 1;
             if (nextCount <= 0) {
                 subscribersCountByModel.delete(model);
-                core.transport.dispatch({ action: 'Unload' }, model);
+            core.transport.dispatch({ action: 'Unload' }, model);
             } else {
                 subscribersCountByModel.set(model, nextCount);
             }

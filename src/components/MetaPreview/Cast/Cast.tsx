@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import { useTranslation } from 'react-i18next';
 import { Image } from 'stremio/components';
 import type { TMDBCast } from 'stremio/common/tmdbTypes';
 import styles from './styles.less';
@@ -10,6 +11,7 @@ type Props = {
 };
 
 const Cast: React.FC<Props> = ({ className, cast }) => {
+    const { t } = useTranslation();
     if (!cast || cast.length === 0) {
         return null;
     }
@@ -18,7 +20,7 @@ const Cast: React.FC<Props> = ({ className, cast }) => {
 
     return (
         <div className={classnames(className, styles['cast-section'])}>
-            <div className={styles['cast-label']}>CAST</div>
+            <div className={styles['cast-label']}>{t('CAST')}</div>
             <div className={styles['cast-list']}>
                 {displayCast.map((member) => (
                     <div key={member.id} className={styles['cast-button']}>

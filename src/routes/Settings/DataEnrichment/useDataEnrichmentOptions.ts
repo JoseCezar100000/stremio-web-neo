@@ -32,16 +32,16 @@ const useDataEnrichmentOptions = ({ profile }: Props) => {
             onClick: () => {
                 if (hasApiKey) {
                     setShowTmdbCast(!showTmdbCast);
-                    core.transport.dispatch({
-                        action: 'Ctx',
-                        args: {
-                            action: 'UpdateSettings',
-                            args: {
-                                ...profile.settings,
+        core.transport.dispatch({
+            action: 'Ctx',
+            args: {
+                action: 'UpdateSettings',
+                args: {
+                    ...profile.settings,
                                 showTmdbCast: !showTmdbCast,
-                            }
-                        }
-                    });
+                }
+            }
+        });
                 }
             }
         };
@@ -52,16 +52,16 @@ const useDataEnrichmentOptions = ({ profile }: Props) => {
             checked: showPosterRatings,
             onClick: () => {
                 setShowPosterRatings(!showPosterRatings);
-                core.transport.dispatch({
-                    action: 'Ctx',
-                    args: {
-                        action: 'UpdateSettings',
-                        args: {
-                            ...profile.settings,
+        core.transport.dispatch({
+            action: 'Ctx',
+            args: {
+                action: 'UpdateSettings',
+                args: {
+                    ...profile.settings,
                             showPosterRatings: !showPosterRatings,
-                        }
-                    }
-                });
+                }
+            }
+        });
             }
         };
     }, [profile.settings, showPosterRatings, setShowPosterRatings, core]);

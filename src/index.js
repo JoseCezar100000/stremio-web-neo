@@ -40,7 +40,14 @@ if (translations['en-US']) {
         "SETTINGS_SECTION_RATING": "Rating",
         "SETTINGS_DATA_ENRICHMENT_SHOW_CAST": "Enhanced Cast Section",
         "SETTINGS_DATA_ENRICHMENT_SHOW_POSTER_RATINGS": "Show Ratings on Posters",
-        "SETTINGS_DATA_ENRICHMENT_ADD_KEY": "Add Key"
+        "SETTINGS_DATA_ENRICHMENT_ADD_KEY": "Add Key",
+        "IMDB": "IMDb",
+        "DIRECTOR": "Director",
+        "CAST": "Cast",
+        "BACK_TO_BROWSE": "Back to Browse",
+        "WATCH_NOW": "Watch Now",
+        "MY_LIST": "My List",
+        "HERO": "Hero"
     });
 }
 
