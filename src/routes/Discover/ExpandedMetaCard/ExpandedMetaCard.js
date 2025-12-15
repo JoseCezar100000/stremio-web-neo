@@ -121,8 +121,9 @@ const ExpandedMetaCard = React.forwardRef(({ className, item, open, rect, poster
                             {genres ? <span className={styles['meta']}>{genres}</span> : null}
                             {item.runtime ? <span className={styles['meta']}>{item.runtime}</span> : null}
                         {imdbRating ? (
-                            <span className={styles['imdb']} title={imdbRating}>
-                                <span className={styles['imdb-rating']}>{imdbRating}</span>
+                            <span className={styles['rating']} title={imdbRating}>
+                                <Icon className={styles['rating-icon']} name={'star'} />
+                                <span className={styles['rating-value']}>{imdbRating}</span>
                             </span>
                         ) : null}
                         </div>
