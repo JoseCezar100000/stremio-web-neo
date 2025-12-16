@@ -44,6 +44,7 @@ const transformTMDBData = (data: TMDBMovieDetails | TMDBTVDetails): TMDBData => 
         collection: 'belongs_to_collection' in data ? data.belongs_to_collection : null,
         similar: data.similar?.results || [],
         recommendations: data.recommendations?.results || [],
+        overview: typeof data.overview === 'string' && data.overview.length > 0 ? data.overview : null,
     };
 };
 

@@ -10,7 +10,7 @@ type Props = {
 const useDataEnrichmentOptions = ({ profile }: Props) => {
     const { core } = useServices();
     const [apiKey, setApiKeyState] = useState(() => getTMDBApiKey() || '');
-    const { showTmdbCast, showPosterRatings, setShowTmdbCast, setShowPosterRatings } = useDataEnrichmentPrefs();
+    const { showTmdbCast, showPosterRatings, showTmdbDescription, setShowTmdbCast, setShowPosterRatings, setShowTmdbDescription } = useDataEnrichmentPrefs();
 
     useEffect(() => {
         const handleStorageChange = () => {
@@ -66,9 +66,33 @@ const useDataEnrichmentOptions = ({ profile }: Props) => {
         };
     }, [profile.settings, showPosterRatings, setShowPosterRatings, core]);
 
+    const showTmdbDescriptionToggle = useMemo(() => {
+        const hasApiKey = apiKey && apiKey.trim().length > 0;
+        return {
+            checked: showTmdbDescription,
+            disabled: !hasApiKey,
+            onClick: () => {
+                if (hasApiKey) {
+                    setShowTmdbDescription(!showTmdbDescription);
+        core.transport.dispatch({
+            action: 'Ctx',
+            args: {
+                action: 'UpdateSettings',
+                args: {
+                    ...profile.settings,
+                                showTmdbDescription: !showTmdbDescription,
+                }
+            }
+        });
+                }
+            }
+        };
+    }, [profile.settings, apiKey, showTmdbDescription, setShowTmdbDescription, core]);
+
     return {
         showTmdbCastToggle,
         showPosterRatingsToggle,
+        showTmdbDescriptionToggle,
         refreshApiKey,
     };
 };

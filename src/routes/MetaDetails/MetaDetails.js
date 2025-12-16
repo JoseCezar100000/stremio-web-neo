@@ -13,6 +13,7 @@ const useMetaDetails = require('./useMetaDetails');
 const useSeason = require('./useSeason');
 const useMetaExtensionTabs = require('./useMetaExtensionTabs');
 const { useTMDBData } = require('stremio/common/useTMDBData');
+const { useDataEnrichmentPrefs } = require('stremio/common/dataEnrichmentPrefs');
 const styles = require('./styles');
 
 const MetaDetails = ({ urlParams, queryParams }) => {
@@ -24,6 +25,7 @@ const MetaDetails = ({ urlParams, queryParams }) => {
     const tmdbData = useTMDBData(
         metaDetails.metaItem?.content?.type === 'Ready' ? metaDetails.metaItem.content.content : null
     );
+    const { showTmdbDescription } = useDataEnrichmentPrefs();
     const [metaPath, streamPath] = React.useMemo(() => {
         return metaDetails.selected !== null ?
             [metaDetails.selected.metaPath, metaDetails.selected.streamPath]
@@ -163,10 +165,13 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                                             releaseInfo={metaDetails.metaItem.content.content.releaseInfo}
                                             released={metaDetails.metaItem.content.content.released}
                                             description={
-                                                video !== null && typeof video.overview === 'string' && video.overview.length > 0 ?
-                                                    video.overview
+                                                showTmdbDescription && tmdbData.data?.overview ?
+                                                    tmdbData.data.overview
                                                     :
-                                                    metaDetails.metaItem.content.content.description
+                                                    video !== null && typeof video.overview === 'string' && video.overview.length > 0 ?
+                                                        video.overview
+                                                        :
+                                                        metaDetails.metaItem.content.content.description
                                             }
                                             links={metaDetails.metaItem.content.content.links}
                                             trailerStreams={metaDetails.metaItem.content.content.trailerStreams}

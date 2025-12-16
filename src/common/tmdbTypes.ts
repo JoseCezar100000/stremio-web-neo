@@ -94,5 +94,6 @@ export type TMDBData = {
     collection: TMDBCollection | null;
     similar: (TMDBMovie | TMDBTV)[];
     recommendations: (TMDBMovie | TMDBTV)[];
+    overview: string | null;
 };
 
