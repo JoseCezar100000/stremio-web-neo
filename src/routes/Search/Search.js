@@ -93,6 +93,7 @@ const Search = ({ queryParams }) => {
                                                 className={classnames(styles['search-row'], styles[`search-row-${catalog.content.content[0].posterShape}`], 'animation-fade-in')}
                                                 catalog={catalog}
                                                 itemComponent={MetaItem}
+                                                previewSize={10}
                                             />
                                         );
                                     }
