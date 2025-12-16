@@ -68,21 +68,27 @@
         display: flex;
         flex-direction: row;
         align-items: stretch;
+        flex-wrap: nowrap;
         overflow: visible;
+        gap: 0.5rem;
 
         .meta-item {
-            &.poster-shape-poster {
-                flex: calc(1 / var(--poster-shape-ratio));
-            }
+            flex: 0 0 auto;
 
+            &.poster-shape-poster,
             &.poster-shape-square {
-                flex: 1;
+                flex-basis: clamp(13rem, 15vw, 18rem);
             }
 
             &.poster-shape-landscape {
-                flex: calc(1 / var(--landscape-shape-ratio));
+                flex-basis: clamp(20rem, 24vw, 28rem);
             }
         }
+    }
+
+    .meta-items-scroll {
+        overflow-y: hidden;
+        padding: 0 1rem;
     }
 }
 

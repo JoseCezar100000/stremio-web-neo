@@ -217,13 +217,13 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
 
     const collectionShelfItems = React.useMemo(() => {
         if (!showSimilarTitles || !tmdbCollection || !Array.isArray(tmdbCollectionParts) || tmdbCollectionParts.length === 0) return null;
-        return makeShelfItems(tmdbCollectionParts, 'movie', (p) => p.title);
+        return makeShelfItems(tmdbCollectionParts.slice(0, 20), 'movie', (p) => p.title);
     }, [showSimilarTitles, tmdbCollection, tmdbCollectionParts, makeShelfItems]);
 
     const similarShelfItems = React.useMemo(() => {
         if (!showSimilarTitles || !Array.isArray(tmdbSimilar) || tmdbSimilar.length === 0) return null;
         const type = tmdbType === 'tv' ? 'tv' : 'movie';
-        return makeShelfItems(tmdbSimilar, type, (it) => (type === 'tv' ? it.name : it.title));
+        return makeShelfItems(tmdbSimilar.slice(0, 20), type, (it) => (type === 'tv' ? it.name : it.title));
     }, [showSimilarTitles, tmdbSimilar, tmdbType, makeShelfItems]);
     const renderLogoFallback = React.useCallback(() => (
         <div className={styles['logo-placeholder']}>{name}</div>
@@ -344,7 +344,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                         </React.Fragment>
                     )}
                 </div>
-
+                
                 {/* Director */}
                 {directorLinks.length > 0 && (
                     <div className={styles['crew-section']}>
