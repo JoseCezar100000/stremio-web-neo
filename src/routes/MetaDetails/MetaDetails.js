@@ -26,6 +26,10 @@ const MetaDetails = ({ urlParams, queryParams }) => {
         metaDetails.metaItem?.content?.type === 'Ready' ? metaDetails.metaItem.content.content : null
     );
     const { showTmdbDescription } = useDataEnrichmentPrefs();
+    const tmdbType = React.useMemo(() => {
+        const type = metaDetails.metaItem?.content?.type === 'Ready' ? metaDetails.metaItem.content.content?.type : null;
+        return type === 'series' || type === 'tv' ? 'tv' : 'movie';
+    }, [metaDetails.metaItem]);
     const [metaPath, streamPath] = React.useMemo(() => {
         return metaDetails.selected !== null ?
             [metaDetails.selected.metaPath, metaDetails.selected.streamPath]
@@ -181,6 +185,10 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                                             ratingInfo={metaDetails.ratingInfo}
                                             tmdbCast={tmdbData.data?.cast || null}
                                             maturityRating={tmdbData.data?.maturityRating || null}
+                                            tmdbCollection={tmdbData.data?.collection || null}
+                                            tmdbCollectionParts={tmdbData.data?.collectionParts || []}
+                                            tmdbSimilar={tmdbData.data?.similar || []}
+                                            tmdbType={tmdbType}
                                         />
                                     </React.Fragment>
                 }

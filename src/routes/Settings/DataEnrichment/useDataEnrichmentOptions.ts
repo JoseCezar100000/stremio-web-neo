@@ -10,7 +10,7 @@ type Props = {
 const useDataEnrichmentOptions = ({ profile }: Props) => {
     const { core } = useServices();
     const [apiKey, setApiKeyState] = useState(() => getTMDBApiKey() || '');
-    const { showTmdbCast, showPosterRatings, showTmdbDescription, showMaturityRating, setShowTmdbCast, setShowPosterRatings, setShowTmdbDescription, setShowMaturityRating } = useDataEnrichmentPrefs();
+    const { showTmdbCast, showPosterRatings, showTmdbDescription, showMaturityRating, showSimilarTitles, setShowTmdbCast, setShowPosterRatings, setShowTmdbDescription, setShowMaturityRating, setShowSimilarTitles } = useDataEnrichmentPrefs();
 
     useEffect(() => {
         const handleStorageChange = () => {
@@ -112,11 +112,35 @@ const useDataEnrichmentOptions = ({ profile }: Props) => {
         };
     }, [profile.settings, apiKey, showMaturityRating, setShowMaturityRating, core]);
 
+    const showSimilarTitlesToggle = useMemo(() => {
+        const hasApiKey = apiKey && apiKey.trim().length > 0;
+        return {
+            checked: showSimilarTitles,
+            disabled: !hasApiKey,
+            onClick: () => {
+                if (hasApiKey) {
+                    setShowSimilarTitles(!showSimilarTitles);
+                    core.transport.dispatch({
+                        action: 'Ctx',
+                        args: {
+                            action: 'UpdateSettings',
+                            args: {
+                                ...profile.settings,
+                                showSimilarTitles: !showSimilarTitles,
+                            }
+                        }
+                    });
+                }
+            }
+        };
+    }, [profile.settings, apiKey, showSimilarTitles, setShowSimilarTitles, core]);
+
     return {
         showTmdbCastToggle,
         showPosterRatingsToggle,
         showTmdbDescriptionToggle,
         showMaturityRatingToggle,
+        showSimilarTitlesToggle,
         refreshApiKey,
     };
 };

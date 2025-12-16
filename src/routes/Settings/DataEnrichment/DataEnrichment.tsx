@@ -14,6 +14,7 @@ const DataEnrichment = forwardRef<HTMLDivElement, Props>(({ profile }: Props, re
         showPosterRatingsToggle,
         showTmdbDescriptionToggle,
         showMaturityRatingToggle,
+        showSimilarTitlesToggle,
         refreshApiKey,
     } = useDataEnrichmentOptions({ profile });
 
@@ -37,6 +38,12 @@ const DataEnrichment = forwardRef<HTMLDivElement, Props>(({ profile }: Props, re
                     <Toggle
                         tabIndex={-1}
                         {...showMaturityRatingToggle}
+                    />
+                </Option>
+                <Option label={'SETTINGS_DATA_ENRICHMENT_SHOW_SIMILAR_TITLES'}>
+                    <Toggle
+                        tabIndex={-1}
+                        {...showSimilarTitlesToggle}
                     />
                 </Option>
             </Category>
