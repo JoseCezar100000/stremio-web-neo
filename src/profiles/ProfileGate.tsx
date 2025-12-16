@@ -80,11 +80,14 @@ export const ProfileGate = ({ children }: Props) => {
             <div className={styles['background-container']} />
             <div className={styles['heading-container']}>
                 <div className={styles['logo-container']}>
-                    <Image
-                        className={styles['logo']}
-                        src={require('/images/logo.png')}
-                        alt={' '}
-                    />
+                    {React.createElement(Image as any, {
+                        className: styles['logo'],
+                        src: require('/images/logo.png'),
+                        alt: ' ',
+                        fallbackSrc: '',
+                        renderFallback: () => null,
+                        onError: () => {}
+                    })}
                 </div>
                 <div className={styles['title-container']}>
                     {t('PROFILES_SELECT_TITLE')}
