@@ -145,6 +145,7 @@ const Board = () => {
                                         className={classnames(styles['board-row'], styles[`board-row-${catalog.content.content[0].posterShape}`], 'animation-fade-in')}
                                         catalog={catalog}
                                         itemComponent={MetaItem}
+                                        previewSize={20}
                                     />
                                 );
                             }
