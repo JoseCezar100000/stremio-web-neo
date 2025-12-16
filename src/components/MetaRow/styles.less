@@ -70,17 +70,18 @@
         align-items: stretch;
         flex-wrap: nowrap;
         overflow: visible;
+        gap: 0.5rem;
 
         .meta-item {
             flex: 0 0 auto;
 
             &.poster-shape-poster,
             &.poster-shape-square {
-                flex-basis: clamp(10rem, 13vw, 14rem);
+                flex-basis: clamp(13rem, 15vw, 18rem);
             }
 
             &.poster-shape-landscape {
-                flex-basis: clamp(16rem, 20vw, 22rem);
+                flex-basis: clamp(20rem, 24vw, 28rem);
             }
         }
     }
