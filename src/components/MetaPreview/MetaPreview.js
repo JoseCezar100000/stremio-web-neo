@@ -28,11 +28,11 @@ const ALLOWED_LINK_REDIRECTS = [
     routesRegexp.metadetails.regexp
 ];
 
-const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo, tmdbCast }, ref) => {
+const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo, tmdbCast, maturityRating }, ref) => {
     const { t } = useTranslation();
     const profile = useProfile();
     const [shareModalOpen, openShareModal, closeShareModal] = useBinaryState(false);
-    const { showTmdbCast } = useDataEnrichmentPrefs();
+    const { showTmdbCast, showMaturityRating } = useDataEnrichmentPrefs();
     const linksGroups = React.useMemo(() => {
         return Array.isArray(links) ?
             links
@@ -213,6 +213,12 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                         <>
                             <div className={styles['metadata-separator']}>•</div>
                             <div className={styles['metadata-item']}>{runtime}</div>
+                        </>
+                    )}
+                    {showMaturityRating && maturityRating && (
+                        <>
+                            <div className={styles['metadata-separator']}>•</div>
+                            <div className={styles['metadata-item']}>{maturityRating}</div>
                         </>
                     )}
                 </div>
@@ -397,6 +403,7 @@ MetaPreview.propTypes = {
     toggleInLibrary: PropTypes.func,
     ratingInfo: PropTypes.object,
     tmdbCast: PropTypes.array,
+    maturityRating: PropTypes.string,
 };
 
 module.exports = MetaPreview;

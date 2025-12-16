@@ -180,6 +180,7 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                                             metaId={metaDetails.metaItem.content.content.id}
                                             ratingInfo={metaDetails.ratingInfo}
                                             tmdbCast={tmdbData.data?.cast || null}
+                                            maturityRating={tmdbData.data?.maturityRating || null}
                                         />
                                     </React.Fragment>
                 }

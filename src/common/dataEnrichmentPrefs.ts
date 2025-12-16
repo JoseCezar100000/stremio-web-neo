@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 const STORAGE_KEY_SHOW_TMDB_CAST = 'stremio_show_tmdb_cast';
 const STORAGE_KEY_SHOW_POSTER_RATINGS = 'stremio_show_poster_ratings';
 const STORAGE_KEY_SHOW_TMDB_DESCRIPTION = 'stremio_show_tmdb_description';
+const STORAGE_KEY_SHOW_MATURITY_RATING = 'stremio_show_maturity_rating';
 const EVENT_NAME = 'stremio-data-enrichment-prefs-changed';
 
 const parseBool = (value: string | null, defaultValue: boolean): boolean => {
@@ -61,6 +62,23 @@ export const setShowTmdbDescription = (value: boolean): void => {
     window.dispatchEvent(new Event(EVENT_NAME));
 };
 
+export const getShowMaturityRating = (): boolean => {
+    try {
+        return parseBool(window.localStorage.getItem(STORAGE_KEY_SHOW_MATURITY_RATING), false);
+    } catch {
+        return false;
+    }
+};
+
+export const setShowMaturityRating = (value: boolean): void => {
+    try {
+        window.localStorage.setItem(STORAGE_KEY_SHOW_MATURITY_RATING, value ? 'true' : 'false');
+    } catch {
+        // ignore
+    }
+    window.dispatchEvent(new Event(EVENT_NAME));
+};
+
 export const useDataEnrichmentPrefs = () => {
     const [version, setVersion] = useState(0);
 
@@ -77,18 +95,22 @@ export const useDataEnrichmentPrefs = () => {
     const showTmdbCast = useMemo(() => getShowTmdbCast(), [version]);
     const showPosterRatings = useMemo(() => getShowPosterRatings(), [version]);
     const showTmdbDescription = useMemo(() => getShowTmdbDescription(), [version]);
+    const showMaturityRating = useMemo(() => getShowMaturityRating(), [version]);
 
     const updateShowTmdbCast = useCallback((value: boolean) => setShowTmdbCast(value), []);
     const updateShowPosterRatings = useCallback((value: boolean) => setShowPosterRatings(value), []);
     const updateShowTmdbDescription = useCallback((value: boolean) => setShowTmdbDescription(value), []);
+    const updateShowMaturityRating = useCallback((value: boolean) => setShowMaturityRating(value), []);
 
     return {
         showTmdbCast,
         showPosterRatings,
         showTmdbDescription,
+        showMaturityRating,
         setShowTmdbCast: updateShowTmdbCast,
         setShowPosterRatings: updateShowPosterRatings,
         setShowTmdbDescription: updateShowTmdbDescription,
+        setShowMaturityRating: updateShowMaturityRating,
     };
 };
 
