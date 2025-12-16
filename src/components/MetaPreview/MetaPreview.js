@@ -233,6 +233,13 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                     </div>
                 )}
                 
+                {/* Synopsis */}
+                {typeof description === 'string' && description.length > 0 && (
+                    <div className={styles['synopsis']}>
+                        {description}
+                    </div>
+                )}
+                
                 {/* Action Buttons */}
                 <div className={styles['action-buttons-row']}>
                     {typeof trailerHref === 'string' && (
@@ -284,13 +291,6 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                         </React.Fragment>
                     )}
                 </div>
-                
-                {/* Synopsis */}
-                {typeof description === 'string' && description.length > 0 && (
-                    <div className={styles['synopsis']}>
-                        {description}
-                    </div>
-                )}
                 
                 {/* Director */}
                 {directorLinks.length > 0 && (
