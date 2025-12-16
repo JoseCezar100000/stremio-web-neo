@@ -6,6 +6,8 @@ import { getActiveProfileId, getProfiles, setActiveProfileId } from './profileSt
 import { FORCE_PROFILE_GATE_ONCE_SESSION_KEY, SKIP_PROFILE_GATE_ONCE_SESSION_KEY } from './constants';
 import type { LocalProfile } from './types';
 import styles from './ProfileGate.less';
+import logoImage from '/images/logo.png';
+import defaultAvatarImage from '/images/default_avatar.png';
 
 type Props = {
     children: React.ReactNode;
@@ -19,6 +21,8 @@ export const ProfileGate = ({ children }: Props) => {
     const [profiles, setProfilesState] = useState<LocalProfile[]>([]);
     const [activeId, setActiveIdState] = useState<string | null>(null);
     const [dismissed, setDismissed] = useState(false);
+    const [hash, setHash] = useState(() => window.location.hash);
+    const renderImageFallback = useCallback(() => null, []);
 
     useEffect(() => {
         let mounted = true;
@@ -48,12 +52,18 @@ export const ProfileGate = ({ children }: Props) => {
         return () => { mounted = false; };
     }, []);
 
+    useEffect(() => {
+        const onHashChange = () => setHash(window.location.hash);
+        window.addEventListener('hashchange', onHashChange);
+        return () => window.removeEventListener('hashchange', onHashChange);
+    }, []);
+
     const shouldShowSelector = useMemo(() => {
         if (!ready || dismissed) return false;
         if (profiles.length <= 1) return false;
         // Only show on the very first screen (avoid breaking deep links)
-        return isRootHash(window.location.hash);
-    }, [ready, dismissed, profiles.length]);
+        return isRootHash(hash);
+    }, [ready, dismissed, profiles.length, hash]);
 
     const onSelect = useCallback(async (profileId: string) => {
         if (profileId === activeId) {
@@ -73,8 +83,6 @@ export const ProfileGate = ({ children }: Props) => {
         return <>{children}</>;
     }
 
-    const avatarUrl = require('/images/default_avatar.png');
-
     return (
         <div className={styles['gate']}>
             <div className={styles['background-container']} />
@@ -82,10 +90,10 @@ export const ProfileGate = ({ children }: Props) => {
                 <div className={styles['logo-container']}>
                     {React.createElement(Image as any, {
                         className: styles['logo'],
-                        src: require('/images/logo.png'),
+                        src: logoImage,
                         alt: ' ',
                         fallbackSrc: '',
-                        renderFallback: () => null,
+                        renderFallback: renderImageFallback,
                         onError: () => {}
                     })}
                 </div>
@@ -103,7 +111,7 @@ export const ProfileGate = ({ children }: Props) => {
                                 className={styles['profile']}
                                 onClick={() => onSelect(p.id)}
                             >
-                                <div className={styles['avatar']} style={{ backgroundImage: `url('${avatarUrl}')` }} />
+                                <div className={styles['avatar']} style={{ backgroundImage: `url('${defaultAvatarImage}')` }} />
                                 <div className={styles['name']} title={p.name}>{p.name}</div>
                             </button>
                         ))

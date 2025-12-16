@@ -13,25 +13,45 @@ const safeParse = <T>(value: string | null): T | null => {
 const now = () => Date.now();
 
 export const getProfiles = (): LocalProfile[] => {
-    const parsed = safeParse<LocalProfile[]>(window.localStorage.getItem(PROFILES_STORAGE_KEY));
-    return Array.isArray(parsed) ? parsed : [];
+    try {
+        const parsed = safeParse<LocalProfile[]>(window.localStorage.getItem(PROFILES_STORAGE_KEY));
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
 };
 
 export const setProfiles = (profiles: LocalProfile[]) => {
-    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles.slice(0, MAX_PROFILES)));
+    try {
+        window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles.slice(0, MAX_PROFILES)));
+    } catch {
+        // ignore
+    }
 };
 
 export const getActiveProfileId = (): string | null => {
-    const id = window.localStorage.getItem(ACTIVE_PROFILE_ID_STORAGE_KEY);
-    return typeof id === 'string' && id.length ? id : null;
+    try {
+        const id = window.localStorage.getItem(ACTIVE_PROFILE_ID_STORAGE_KEY);
+        return typeof id === 'string' && id.length ? id : null;
+    } catch {
+        return null;
+    }
 };
 
 export const setActiveProfileId = (profileId: string) => {
-    window.localStorage.setItem(ACTIVE_PROFILE_ID_STORAGE_KEY, profileId);
+    try {
+        window.localStorage.setItem(ACTIVE_PROFILE_ID_STORAGE_KEY, profileId);
+    } catch {
+        // ignore
+    }
 };
 
 export const clearActiveProfileId = () => {
-    window.localStorage.removeItem(ACTIVE_PROFILE_ID_STORAGE_KEY);
+    try {
+        window.localStorage.removeItem(ACTIVE_PROFILE_ID_STORAGE_KEY);
+    } catch {
+        // ignore
+    }
 };
 
 export const getActiveLocalProfile = (): LocalProfile | null => {
