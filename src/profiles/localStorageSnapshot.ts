@@ -6,33 +6,49 @@ const isProfilesKey = (key: string) =>
 
 export const captureLocalStorageSnapshot = (): LocalProfileSnapshot => {
     const snapshot: LocalProfileSnapshot = {};
-    for (let i = 0; i < window.localStorage.length; i += 1) {
-        const key = window.localStorage.key(i);
-        if (!key || isProfilesKey(key)) continue;
-        const value = window.localStorage.getItem(key);
-        if (value !== null) {
-            snapshot[key] = value;
+    try {
+        for (let i = 0; i < window.localStorage.length; i += 1) {
+            const key = window.localStorage.key(i);
+            if (!key || isProfilesKey(key)) continue;
+            const value = window.localStorage.getItem(key);
+            if (value !== null) {
+                snapshot[key] = value;
+            }
         }
+    } catch {
+        return {};
     }
     return snapshot;
 };
 
 export const clearLocalStorageExceptProfilesKeys = () => {
     const keysToRemove: string[] = [];
-    for (let i = 0; i < window.localStorage.length; i += 1) {
-        const key = window.localStorage.key(i);
-        if (!key || isProfilesKey(key)) continue;
-        keysToRemove.push(key);
+    try {
+        for (let i = 0; i < window.localStorage.length; i += 1) {
+            const key = window.localStorage.key(i);
+            if (!key || isProfilesKey(key)) continue;
+            keysToRemove.push(key);
+        }
+        keysToRemove.forEach((k) => window.localStorage.removeItem(k));
+    } catch {
+        // ignore
     }
-    keysToRemove.forEach((k) => window.localStorage.removeItem(k));
 };
 
 export const restoreLocalStorageSnapshot = (snapshot: LocalProfileSnapshot) => {
-    clearLocalStorageExceptProfilesKeys();
-    Object.entries(snapshot).forEach(([k, v]) => {
-        if (isProfilesKey(k)) return;
-        window.localStorage.setItem(k, v);
-    });
+    try {
+        clearLocalStorageExceptProfilesKeys();
+        Object.entries(snapshot).forEach(([k, v]) => {
+            if (isProfilesKey(k)) return;
+            try {
+                window.localStorage.setItem(k, v);
+            } catch {
+                // ignore
+            }
+        });
+    } catch {
+        // ignore
+    }
 };
 
 
