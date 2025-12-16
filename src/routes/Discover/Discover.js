@@ -10,6 +10,8 @@ const { CONSTANTS, useBinaryState, useOnScrollToBottom, withCoreSuspender } = re
 const { AddonDetailsModal, Button, DelayedRenderer, Image, MainNavBars, MetaItem, ModalDialog, MultiselectMenu } = require('stremio/components');
 const useDiscover = require('./useDiscover');
 const useSelectableInputs = require('./useSelectableInputs');
+const useClientFilters = require('./useClientFilters');
+const AdvancedFilters = require('./AdvancedFilters');
 const ExpandedMetaCard = require('./ExpandedMetaCard/ExpandedMetaCard');
 const styles = require('./styles');
 
@@ -20,6 +22,7 @@ const Discover = ({ urlParams, queryParams }) => {
     const { core } = useServices();
     const [discover, loadNextPage] = useDiscover(urlParams, queryParams);
     const [selectInputs, hasNextPage] = useSelectableInputs(discover);
+    const { filters, updateFilter, clearFilters, filterItems, hasActiveFilters, activeFilterCount } = useClientFilters();
     const [inputsModalOpen, openInputsModal, closeInputsModal] = useBinaryState(false);
     const [addonModalOpen, openAddonModal, closeAddonModal] = useBinaryState(false);
     const [selectedMetaItemIndex, setSelectedMetaItemIndex] = React.useState(0);
@@ -47,14 +50,15 @@ const Discover = ({ urlParams, queryParams }) => {
             }
         }
     }, [hasNextPage, loadNextPage]);
+    // Apply client-side filters to catalog content
+    const filteredContent = React.useMemo(() => {
+        if (discover.catalog?.content?.type !== 'Ready') return [];
+        return filterItems(discover.catalog.content.content);
+    }, [discover.catalog, filterItems]);
+
     const selectedMetaItem = React.useMemo(() => {
-        return discover.catalog !== null &&
-            discover.catalog.content.type === 'Ready' &&
-            discover.catalog.content.content[selectedMetaItemIndex] ?
-            discover.catalog.content.content[selectedMetaItemIndex]
-            :
-            null;
-    }, [discover.catalog, selectedMetaItemIndex]);
+        return filteredContent[selectedMetaItemIndex] || null;
+    }, [filteredContent, selectedMetaItemIndex]);
     const addToLibrary = React.useCallback(() => {
         if (selectedMetaItem === null) {
             return;
@@ -267,8 +271,11 @@ const Discover = ({ urlParams, queryParams }) => {
                             />
                         ))}
                         <div className={styles['filter-container']}>
-                            <Button className={styles['filter-button']} title={t('ALL_FILTERS')} onClick={openInputsModal}>
+                            <Button className={classnames(styles['filter-button'], { [styles['has-active-filters']]: hasActiveFilters })} title={t('ALL_FILTERS')} onClick={openInputsModal}>
                                 <Icon className={styles['filter-icon']} name={'filters'} />
+                                {activeFilterCount > 0 && (
+                                    <span className={styles['filter-badge']}>{activeFilterCount}</span>
+                                )}
                             </Button>
                         </div>
                     </div>
@@ -325,7 +332,7 @@ const Discover = ({ urlParams, queryParams }) => {
                                                 :
                                                 null
                                         }
-                                        {discover.catalog.content.content.map((metaItem, index) => (
+                                        {filteredContent.map((metaItem, index) => (
                                             <MetaItem
                                                 key={index}
                                                 className={classnames(
@@ -366,6 +373,12 @@ const Discover = ({ urlParams, queryParams }) => {
                                 onSelect={onSelect}
                             />
                         ))}
+                        <AdvancedFilters
+                            filters={filters}
+                            updateFilter={updateFilter}
+                            clearFilters={clearFilters}
+                            hasActiveFilters={hasActiveFilters}
+                        />
                     </ModalDialog>
                     :
                     null

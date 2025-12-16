@@ -78,9 +78,10 @@
 
                     .filter-button {
                         flex: none;
-                        display: none;
+                        display: flex;
                         align-items: center;
                         justify-content: center;
+                        position: relative;
                         width: 3rem;
                         height: 3rem;
                         margin-left: 1.5rem;
@@ -92,6 +93,27 @@
                             width: 1.4rem;
                             height: 1.4rem;
                             color: var(--primary-foreground-color);
+                        }
+
+                        .filter-badge {
+                            position: absolute;
+                            top: -0.25rem;
+                            right: -0.25rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            min-width: 1.1rem;
+                            height: 1.1rem;
+                            padding: 0 0.25rem;
+                            font-size: 0.65rem;
+                            font-weight: 600;
+                            color: var(--primary-background-color);
+                            background-color: var(--primary-accent-color);
+                            border-radius: 50%;
+                        }
+
+                        &.has-active-filters {
+                            border: 1px solid var(--primary-accent-color);
                         }
                     }
                 }
@@ -245,20 +267,19 @@
 .selectable-inputs-modal {
     .selectable-inputs-modal-container {
         overflow: visible;
+        width: 92%;
+        max-width: 44rem;
 
         .selectable-inputs-modal-content {
             overflow: visible !important;
+            padding: 0.5rem 0;
 
             .select-input {
                 height: 3rem;
-                display: none;
+                display: flex;
 
-                &:nth-child(n+4) {
-                    display: flex;
-
-                    &:not(:last-child) {
-                        margin-bottom: 1rem;
-                    }
+                &:not(:last-child) {
+                    margin-bottom: 1rem;
                 }
 
                 .multiselect-menu-container {
@@ -385,21 +406,4 @@
         }
     }
 
-    .selectable-inputs-modal {
-        .selectable-inputs-modal-container {
-            .selectable-inputs-modal-content {
-                .select-input {
-                    display: none;
-
-                    &:nth-child(n+2) {
-                        display: flex;
-
-                        &:not(:last-child) {
-                            margin-bottom: 1rem;
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
