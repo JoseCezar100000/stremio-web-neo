@@ -50,8 +50,7 @@ if (translations['en-US']) {
         'MY_LIST': 'My List',
         'HERO': 'Hero',
 
-        'PROFILES_SELECT_TITLE': 'Choose profile',
-        'PROFILES_SELECT_SUBTITLE': 'Select who will use Stremio right now',
+        'PROFILES_SELECT_TITLE': 'Who\'s watching?',
         'SETTINGS_SECTION_PROFILES': 'Profiles',
         'SETTINGS_PROFILES_ADD': 'Add profile',
         'SETTINGS_PROFILES_ACTIVE': 'Active',

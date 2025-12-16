@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Image } from 'stremio/components';
 import { ensureProfilesInitialized, switchToProfile } from './switchProfile';
 import { getActiveProfileId, getProfiles, setActiveProfileId } from './profileStore';
 import { FORCE_PROFILE_GATE_ONCE_SESSION_KEY, SKIP_PROFILE_GATE_ONCE_SESSION_KEY } from './constants';
@@ -76,9 +77,20 @@ export const ProfileGate = ({ children }: Props) => {
 
     return (
         <div className={styles['gate']}>
-            <div className={styles['card']}>
-                <div className={styles['title']}>{t('PROFILES_SELECT_TITLE')}</div>
-                <div className={styles['subtitle']}>{t('PROFILES_SELECT_SUBTITLE')}</div>
+            <div className={styles['background-container']} />
+            <div className={styles['heading-container']}>
+                <div className={styles['logo-container']}>
+                    <Image
+                        className={styles['logo']}
+                        src={require('/images/logo.png')}
+                        alt={' '}
+                    />
+                </div>
+                <div className={styles['title-container']}>
+                    {t('PROFILES_SELECT_TITLE')}
+                </div>
+            </div>
+            <div className={styles['content']}>
                 <div className={styles['grid']}>
                     {
                         profiles.map((p) => (
