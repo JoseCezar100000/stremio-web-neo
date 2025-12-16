@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Button, MultiselectMenu, Toggle } from 'stremio/components';
 import { useServices } from 'stremio/services';
 import { usePlatform, useToast } from 'stremio/common';
+import { getActiveLocalProfile } from 'stremio/profiles';
 import { Section, Option, Link } from '../components';
 import User from './User';
+import ProfilesManager from './ProfilesManager/ProfilesManager';
 import useDataExport from './useDataExport';
 import styles from './General.less';
 import useGeneralOptions from './useGeneralOptions';
@@ -28,6 +30,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     } = useGeneralOptions(profile);
 
     const [traktAuthStarted, setTraktAuthStarted] = useState(false);
+    const isAdminLocalProfile = useMemo(() => getActiveLocalProfile()?.isAdmin === true, []);
 
     const isTraktAuthenticated = useMemo(() => {
         const trakt = profile?.auth?.user?.trakt;
@@ -92,6 +95,12 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
             <User profile={profile} />
         </Section>
 
+        {isAdminLocalProfile ? (
+            <Section label={'SETTINGS_SECTION_PROFILES'}>
+                <ProfilesManager />
+            </Section>
+        ) : null}
+
         <Section>
             {
                 profile?.auth?.user &&
@@ -113,7 +122,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
             />
             <Link
                 label={t('SETTINGS_SOURCE_CODE')}
-                href={`https://github.com/stremio/stremio-web/tree/${process.env.COMMIT_HASH}`}
+                href={`https://github.com/stremio/stremio-web/tree/${(globalThis as any).process?.env?.COMMIT_HASH}`}
             />
             <Link
                 label={t('TERMS_OF_SERVICE')}

@@ -10,6 +10,7 @@ const { FileDropProvider, PlatformProvider, ToastProvider, TooltipProvider, Shor
 const ServicesToaster = require('./ServicesToaster');
 const DeepLinkHandler = require('./DeepLinkHandler');
 const SearchParamsHandler = require('./SearchParamsHandler');
+const { ProfilesRuntime } = require('stremio/profiles');
 const { default: UpdaterBanner } = require('./UpdaterBanner');
 const { default: ShortcutsModal } = require('./ShortcutsModal');
 const ErrorDialog = require('./ErrorDialog');
@@ -18,6 +19,7 @@ const routerViewsConfig = require('./routerViewsConfig');
 const styles = require('./styles');
 
 const RouterWithProtectedRoutes = withCoreSuspender(withProtectedRoutes(Router));
+const ProfilesRuntimeWithCoreSuspender = withCoreSuspender(ProfilesRuntime);
 
 const App = () => {
     const { i18n } = useTranslation();
@@ -159,6 +161,9 @@ const App = () => {
             }
         };
         const onWindowFocus = () => {
+            if (!services.core.transport) {
+                return;
+            }
             services.core.transport.dispatch({
                 action: 'Ctx',
                 args: {
@@ -220,6 +225,7 @@ const App = () => {
                                                 <ServicesToaster />
                                                 <DeepLinkHandler />
                                                 <SearchParamsHandler />
+                                                <ProfilesRuntimeWithCoreSuspender />
                                                 <UpdaterBanner className={styles['updater-banner-container']} />
                                                 <RouterWithProtectedRoutes
                                                     className={styles['router']}
