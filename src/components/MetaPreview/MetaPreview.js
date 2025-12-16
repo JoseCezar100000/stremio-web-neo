@@ -188,7 +188,8 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
         const apiKey = getTMDBApiKey();
         if (!apiKey) return;
 
-        const imdbId = await getTMDBExternalImdbId(tmdbId, type, apiKey);
+        const tmdbApiType = type === 'series' ? 'tv' : type;
+        const imdbId = await getTMDBExternalImdbId(tmdbId, tmdbApiType, apiKey);
         if (!imdbId) return;
 
         tmdbImdbCacheRef.current.set(cacheKey, imdbId);
@@ -222,8 +223,8 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
 
     const similarShelfItems = React.useMemo(() => {
         if (!showSimilarTitles || !Array.isArray(tmdbSimilar) || tmdbSimilar.length === 0) return null;
-        const type = tmdbType === 'tv' ? 'tv' : 'movie';
-        return makeShelfItems(tmdbSimilar.slice(0, 20), type, (it) => (type === 'tv' ? it.name : it.title));
+        const type = tmdbType === 'tv' ? 'series' : 'movie';
+        return makeShelfItems(tmdbSimilar.slice(0, 20), type, (it) => (type === 'series' ? it.name : it.title));
     }, [showSimilarTitles, tmdbSimilar, tmdbType, makeShelfItems]);
     const renderLogoFallback = React.useCallback(() => (
         <div className={styles['logo-placeholder']}>{name}</div>
