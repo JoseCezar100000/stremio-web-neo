@@ -46,7 +46,7 @@ if (translations['en-US']) {
         'SETTINGS_DATA_ENRICHMENT_SHOW_POSTER_RATINGS': 'Show Ratings on Posters',
         'SETTINGS_DATA_ENRICHMENT_ADD_KEY': 'Add Key',
         'COLLECTION': 'Collection',
-        'SIMILAR_TITLES': 'Similar Titles',
+        'SIMILAR_TITLES': 'More like this',
         'IMDB': 'IMDb',
         'DIRECTOR': 'Director',
         'CAST': 'Cast',
