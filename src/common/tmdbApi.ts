@@ -65,8 +65,13 @@ const transformTMDBData = (data: TMDBMovieDetails | TMDBTVDetails): TMDBData => 
     if ('release_dates' in data && data.release_dates?.results) {
         const usRelease = data.release_dates.results.find(r => r.iso_3166_1 === 'US');
         if (usRelease?.release_dates) {
-            const theatrical = usRelease.release_dates.find(rd => rd.type === 3 && rd.certification);
-            maturityRating = theatrical?.certification || usRelease.release_dates.find(rd => rd.certification)?.certification || null;
+            const theatrical = usRelease.release_dates.find(rd => rd.type === 3 && rd.certification && rd.certification.length > 0);
+            if (theatrical) {
+                maturityRating = theatrical.certification;
+            } else {
+                const anyWithCert = usRelease.release_dates.find(rd => rd.certification && rd.certification.length > 0);
+                maturityRating = anyWithCert?.certification || null;
+            }
         }
     } else if ('content_ratings' in data && data.content_ratings?.results) {
         const usRating = data.content_ratings.results.find(r => r.iso_3166_1 === 'US');
