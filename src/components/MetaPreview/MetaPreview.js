@@ -376,27 +376,27 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                     showTmdbCast && tmdbCast && tmdbCast.length > 0 ? (
                         <Cast cast={tmdbCast} />
                     ) : (
-                        <div className={classnames(styles['crew-section'], styles['cast-section-fallback'])}>
-                            <div className={styles['crew-label']}>{t('CAST')}</div>
-                            <div className={styles['crew-pills']}>
-                                {castLinks.slice(0, 10).map((link, index) => (
-                                    link.href ? (
-                                        <Button
-                                            key={index}
-                                            className={styles['crew-pill']}
-                                            href={link.href}
-                                            title={link.label}
-                                        >
-                                            {link.label}
-                                        </Button>
-                                    ) : (
-                                        <span key={index} className={styles['crew-pill']}>
-                                            {link.label}
-                                        </span>
-                                    )
-                                ))}
+                            <div className={classnames(styles['crew-section'], styles['cast-section-fallback'])}>
+                                <div className={styles['crew-label']}>{t('CAST')}</div>
+                                <div className={styles['crew-pills']}>
+                                    {castLinks.slice(0, 10).map((link, index) => (
+                                        link.href ? (
+                                            <Button
+                                                key={index}
+                                                className={styles['crew-pill']}
+                                                href={link.href}
+                                                title={link.label}
+                                            >
+                                                {link.label}
+                                            </Button>
+                                        ) : (
+                                            <span key={index} className={styles['crew-pill']}>
+                                                {link.label}
+                                            </span>
+                                        )
+                                    ))}
+                                </div>
                             </div>
-                        </div>
                     )
                 )}
                 

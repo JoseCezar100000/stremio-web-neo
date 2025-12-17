@@ -59,26 +59,26 @@ const Board = () => {
     const sourceItems = React.useMemo(() => {
         return continueWatchingPreview?.items ?? continueWatchingPreview?.content?.content ?? [];
     }, [continueWatchingPreview]);
-    
-    // Fetch meta details for first 4 items to get background and logo
-    const { metaDataMap, isLoading: isLoadingMetaDetails } = useMetaDetailsForItems(sourceItems, 4);
-    
+
+    // Fetch meta details for first 10 items to get background and logo
+    const { metaDataMap, isLoading: isLoadingMetaDetails } = useMetaDetailsForItems(sourceItems, 10);
+
     const continueWatchingCatalog = React.useMemo(() => {
         if (!continueWatchingPreview) {
             return continueWatchingPreview;
         }
-        
+
         if (!Array.isArray(sourceItems) || sourceItems.length === 0) {
             return continueWatchingPreview;
         }
-        
+
         const items = sourceItems.map((item) => {
             const itemKey = item._id || item.id;
             const metaData = metaDataMap.get(itemKey) || metaDataMap.get(item._id) || metaDataMap.get(item.id);
-            
+
             const finalBackground = metaData?.background || item.background || item.backdrop || item.fanart || item?.behaviorHints?.background;
             const finalLogo = metaData?.logo || item.logo || item.logo_url || item?.behaviorHints?.logo;
-            
+
             return {
                 ...item,
                 posterShape: 'landscape',
@@ -86,7 +86,7 @@ const Board = () => {
                 logo: finalLogo
             };
         });
-        
+
         if (continueWatchingPreview.items) {
             return {
                 ...continueWatchingPreview,
@@ -121,7 +121,7 @@ const Board = () => {
                                     className={classnames(styles['board-row'], styles['continue-watching-row'], 'animation-fade-in')}
                                     title={t.string('BOARD_CONTINUE_WATCHING')}
                                     deepLinks={continueWatchingPreview?.deepLinks}
-                                    previewSize={4}
+                                    previewSize={10}
                                     posterShape="landscape"
                                 />
                                 :
@@ -131,7 +131,6 @@ const Board = () => {
                                     catalog={continueWatchingCatalog}
                                     itemComponent={ContinueWatchingItem}
                                     notifications={notifications}
-                                    previewSize={4}
                                 />
                             :
                             null
@@ -145,7 +144,6 @@ const Board = () => {
                                         className={classnames(styles['board-row'], styles[`board-row-${catalog.content.content[0].posterShape}`], 'animation-fade-in')}
                                         catalog={catalog}
                                         itemComponent={MetaItem}
-                                        previewSize={10}
                                     />
                                 );
                             }
