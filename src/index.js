@@ -17,7 +17,6 @@ const i18n = require('i18next');
 const { initReactI18next } = require('react-i18next');
 const stremioTranslations = require('stremio-translations');
 const App = require('./App');
-const { ProfileGate } = require('./profiles');
 
 const translations = Object.fromEntries(Object.entries(stremioTranslations()).map(([key, value]) => [key, {
     translation: value
@@ -54,19 +53,6 @@ if (translations['en-US']) {
         'WATCH_NOW': 'Watch Now',
         'MY_LIST': 'My List',
         'HERO': 'Hero',
-
-        'PROFILES_SELECT_TITLE': 'Who\'s watching?',
-        'SETTINGS_SECTION_PROFILES': 'Profiles',
-        'SETTINGS_PROFILES_ADD': 'Add profile',
-        'SETTINGS_PROFILES_ACTIVE': 'Active',
-        'SETTINGS_PROFILES_DELETE': 'Delete',
-        'SETTINGS_PROFILES_NAME': 'Name',
-        'SETTINGS_PROFILES_ROLE': 'Role',
-        'SETTINGS_PROFILES_ADMIN': 'Admin',
-        'SETTINGS_PROFILES_RENAME': 'Rename',
-        'SETTINGS_PROFILES_NAME_PLACEHOLDER': 'Enter name',
-        'LOCAL_ACCOUNT': 'Local account',
-        'LOG_OUT_PROFILE': 'Log out (profile)',
     });
 }
 
@@ -83,9 +69,7 @@ i18n
 
 const root = ReactDOM.createRoot(document.getElementById('app'));
 root.render(
-    <ProfileGate>
-        <App />
-    </ProfileGate>
+    <App />
 );
 
 if (process.env.NODE_ENV === 'production' && process.env.SERVICE_WORKER_DISABLED !== 'true' && process.env.SERVICE_WORKER_DISABLED !== true && 'serviceWorker' in navigator) {

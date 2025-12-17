@@ -3,10 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Button, MultiselectMenu, Toggle } from 'stremio/components';
 import { useServices } from 'stremio/services';
 import { usePlatform, useToast } from 'stremio/common';
-import { getActiveLocalProfile } from 'stremio/profiles';
 import { Section, Option, Link } from '../components';
 import User from './User';
-import ProfilesManager from './ProfilesManager/ProfilesManager';
 import useDataExport from './useDataExport';
 import styles from './General.less';
 import useGeneralOptions from './useGeneralOptions';
@@ -30,7 +28,6 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     } = useGeneralOptions(profile);
 
     const [traktAuthStarted, setTraktAuthStarted] = useState(false);
-    const isAdminLocalProfile = useMemo(() => getActiveLocalProfile()?.isAdmin === true, []);
 
     const isTraktAuthenticated = useMemo(() => {
         const trakt = profile?.auth?.user?.trakt;
@@ -94,12 +91,6 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         <Section ref={ref}>
             <User profile={profile} />
         </Section>
-
-        {isAdminLocalProfile ? (
-            <Section label={'SETTINGS_SECTION_PROFILES'}>
-                <ProfilesManager />
-            </Section>
-        ) : null}
 
         <Section>
             {

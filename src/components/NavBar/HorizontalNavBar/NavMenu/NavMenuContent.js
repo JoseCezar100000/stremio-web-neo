@@ -13,12 +13,11 @@ const usePWA = require('stremio/common/usePWA');
 const useTorrent = require('stremio/common/useTorrent');
 const { withCoreSuspender } = require('stremio/common/CoreSuspender');
 const useStreamingServer = require('stremio/common/useStreamingServer');
-const { getActiveLocalProfile, getProfiles } = require('stremio/profiles');
-const { FORCE_PROFILE_GATE_ONCE_SESSION_KEY } = require('stremio/profiles/constants');
 const styles = require('./styles');
 
 const NavMenuContent = ({ onClick }) => {
     const { t } = useTranslation();
+    const { core } = useServices();
     const profile = useProfile();
     const streamingServer = useStreamingServer();
     const { createTorrentFromMagnet } = useTorrent();
@@ -30,24 +29,13 @@ const NavMenuContent = ({ onClick }) => {
             profile.settings.streamingServerWarningDismissed.getTime() > Date.now()
         );
     }, [profile.settings, streamingServer.settings]);
-    const [localProfile, setLocalProfile] = React.useState(() => getActiveLocalProfile());
-    const [localProfilesCount, setLocalProfilesCount] = React.useState(() => getProfiles().length);
-    React.useEffect(() => {
-        const onStorage = () => {
-            setLocalProfile(getActiveLocalProfile());
-            setLocalProfilesCount(getProfiles().length);
-        };
-        window.addEventListener('storage', onStorage);
-        return () => window.removeEventListener('storage', onStorage);
-    }, []);
-    const logoutLocalProfileOnClick = React.useCallback(() => {
-        try {
-            window.sessionStorage.setItem(FORCE_PROFILE_GATE_ONCE_SESSION_KEY, '1');
-        } catch (e) {
-            console.warn(e);
-        }
-        window.location.hash = '#/';
-        window.location.reload();
+    const logoutButtonOnClick = React.useCallback(() => {
+        core.transport.dispatch({
+            action: 'Ctx',
+            args: {
+                action: 'Logout'
+            }
+        });
     }, []);
     const onPlayMagnetLinkClick = React.useCallback(async () => {
         try {
@@ -63,20 +51,22 @@ const NavMenuContent = ({ onClick }) => {
                 <div
                     className={styles['avatar-container']}
                     style={{
-                        backgroundImage: `url('${require('/images/default_avatar.png')}')`
+                        backgroundImage: profile.auth === null ?
+                            `url('${require('/images/anonymous.png')}')`
+                            :
+                            profile.auth.user.avatar ?
+                                `url('${profile.auth.user.avatar}')`
+                                :
+                                `url('${require('/images/default_avatar.png')}')`
                     }}
                 />
                 <div className={styles['user-info-details']}>
                     <div className={styles['email-container']}>
-                        <div className={styles['email-label']}>{localProfile?.name || t('LOCAL_ACCOUNT')}</div>
+                        <div className={styles['email-label']}>{profile.auth === null ? t('ANONYMOUS_USER') : profile.auth.user.email}</div>
                     </div>
-                    {
-                        localProfilesCount > 1 ?
-                            <Button className={styles['logout-button-container']} title={t('LOG_OUT_PROFILE')} onClick={logoutLocalProfileOnClick}>
-                                <div className={styles['logout-label']}>{t('LOG_OUT_PROFILE')}</div>
-                            </Button>
-                            : null
-                    }
+                    <Button className={styles['logout-button-container']} title={profile.auth === null ? `${t('LOG_IN')} / ${t('SIGN_UP')}` : t('LOG_OUT')} href={profile.auth === null ? '#/intro' : null} onClick={profile.auth !== null ? logoutButtonOnClick : null}>
+                        <div className={styles['logout-label']}>{profile.auth === null ? `${t('LOG_IN')} / ${t('SIGN_UP')}` : t('LOG_OUT')}</div>
+                    </Button>
                 </div>
             </div>
             {
