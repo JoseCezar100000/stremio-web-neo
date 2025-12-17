@@ -363,15 +363,26 @@
         .discover-content {
             .catalog-container {
                 .selectable-inputs-container {
+                    padding: 0.8rem 0.5rem;
                     justify-content: space-between;
 
                     .select-input {
+                        flex: 0 1 auto;
+
                         &:nth-child(n+2) {
                             display: none;
 
                             &~.filter-container {
                                 .filter-button {
                                     display: flex;
+                                    margin-left: 0.5rem;
+                                    width: 2.5rem;
+                                    height: 2.5rem;
+
+                                    .filter-icon {
+                                        width: 1.2rem;
+                                        height: 1.2rem;
+                                    }
                                 }
                             }
                         }
@@ -379,7 +390,53 @@
                 }
 
                 .meta-items-container {
-                    grid-template-columns: repeat(2, 1fr);
+                    padding: 0 0.4rem;
+                    grid-template-columns: repeat(3, 1fr);
+                    grid-gap: 0.15rem;
+
+                    :global(.meta-item-container) {
+                        padding: 0.4rem;
+                    }
+
+                    .meta-item-placeholder {
+                        padding: 0.4rem;
+
+                        .title-bar-container {
+                            height: 2.4rem;
+                            margin-top: 0.3rem;
+                        }
+                    }
+                }
+
+                .missing-addon-warning-container {
+                    padding: 0 0.5rem 0.8rem 0.5rem;
+
+                    .warning-label {
+                        margin-bottom: 0.6rem;
+                        font-size: 1.2rem;
+                    }
+
+                    .install-button {
+                        padding: 0.8rem;
+                    }
+                }
+
+                .message-container {
+                    padding: 0 0.5rem;
+
+                    &:first-child {
+                        padding: 2rem 0.5rem;
+                    }
+
+                    .image {
+                        width: 8rem;
+                        height: 8rem;
+                        margin-bottom: 0.8rem;
+                    }
+
+                    .message-label {
+                        font-size: 1.5rem;
+                    }
                 }
             }
         }
@@ -395,7 +452,7 @@
                         display: flex;
 
                         &:not(:last-child) {
-                            margin-bottom: 1rem;
+                            margin-bottom: 0.8rem;
                         }
                     }
                 }
