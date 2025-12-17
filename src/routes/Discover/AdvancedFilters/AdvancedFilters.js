@@ -5,6 +5,7 @@ const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const { default: Button } = require('stremio/components/Button');
 const { default: Icon } = require('@stremio/stremio-icons/react');
+const Multiselect = require('stremio/components/Multiselect');
 const styles = require('./styles.less');
 
 // Year options from 1970 to current year
@@ -12,7 +13,7 @@ const currentYear = new Date().getFullYear();
 const YEAR_OPTIONS = [
     { value: null, label: 'Any' },
     ...Array.from({ length: currentYear - 1969 }, (_, i) => ({
-        value: currentYear - i,
+        value: String(currentYear - i),
         label: String(currentYear - i),
     })),
 ];
@@ -20,57 +21,92 @@ const YEAR_OPTIONS = [
 // Rating options
 const RATING_OPTIONS = [
     { value: null, label: 'Any' },
-    { value: 9, label: '9+ Excellent' },
-    { value: 8, label: '8+ Great' },
-    { value: 7, label: '7+ Good' },
-    { value: 6, label: '6+ Fair' },
-    { value: 5, label: '5+ Average' },
+    { value: '9', label: '9+' },
+    { value: '8', label: '8+' },
+    { value: '7', label: '7+' },
+    { value: '6', label: '6+' },
+    { value: '5', label: '5+' },
 ];
 
 // Runtime options (in minutes)
 const RUNTIME_OPTIONS = [
     { value: null, label: 'Any' },
-    { value: 60, label: 'Under 1 hour' },
-    { value: 90, label: 'Under 1.5 hours' },
-    { value: 120, label: 'Under 2 hours' },
-    { value: 180, label: 'Under 3 hours' },
+    { value: '60', label: '< 1h' },
+    { value: '90', label: '< 1.5h' },
+    { value: '120', label: '< 2h' },
+    { value: '180', label: '< 3h' },
 ];
 
-const FilterSelect = ({ value, options, onChange, placeholder }) => {
-    const handleChange = React.useCallback((event) => {
-        const newValue = event.target.value === '' ? null : Number(event.target.value);
+const InlineMultiselect = ({ title, options, value, onChange }) => {
+    const selected = React.useMemo(() => {
+        return value !== null ? [String(value)] : [];
+    }, [value]);
+
+    const handleSelect = React.useCallback((event) => {
+        const newValue = event.value === '' || event.value === null ? null : Number(event.value);
         onChange(newValue);
     }, [onChange]);
 
     return (
-        <select
-            className={styles['select-input']}
-            value={value === null ? '' : value}
-            onChange={handleChange}
-        >
-            {options.map((option) => (
-                <option
-                    key={option.value === null ? 'null' : option.value}
-                    value={option.value === null ? '' : option.value}
-                >
-                    {option.label}
-                </option>
-            ))}
-        </select>
+        <Multiselect
+            className={styles['inline-multiselect']}
+            direction="bottom-right"
+            title={title}
+            options={options}
+            selected={selected}
+            onSelect={handleSelect}
+            renderLabelText={() => {
+                if (value === null) {
+                    return title;
+                }
+                const option = options.find(o => o.value === String(value));
+                return option ? `${title} ${option.label}` : title;
+            }}
+        />
     );
 };
 
-FilterSelect.propTypes = {
+InlineMultiselect.propTypes = {
+    title: PropTypes.string.isRequired,
+    options: PropTypes.array.isRequired,
     value: PropTypes.number,
-    options: PropTypes.arrayOf(PropTypes.shape({
-        value: PropTypes.number,
-        label: PropTypes.string.isRequired,
-    })).isRequired,
     onChange: PropTypes.func.isRequired,
-    placeholder: PropTypes.string,
 };
 
-const AdvancedFilters = ({ className, filters, updateFilter, clearFilters, hasActiveFilters }) => {
+const AdvancedFilters = ({ className, filters, updateFilter, clearFilters, hasActiveFilters, inline }) => {
+    // Inline mode - render filters as Multiselect components in the filter bar
+    if (inline) {
+        return (
+            <div className={classnames(className, styles['inline-filters-container'])}>
+                <InlineMultiselect
+                    title="Year From"
+                    options={YEAR_OPTIONS}
+                    value={filters.yearFrom}
+                    onChange={(value) => updateFilter('yearFrom', value)}
+                />
+                <InlineMultiselect
+                    title="Year To"
+                    options={YEAR_OPTIONS}
+                    value={filters.yearTo}
+                    onChange={(value) => updateFilter('yearTo', value)}
+                />
+                <InlineMultiselect
+                    title="Rating"
+                    options={RATING_OPTIONS}
+                    value={filters.ratingMin}
+                    onChange={(value) => updateFilter('ratingMin', value)}
+                />
+                <InlineMultiselect
+                    title="Runtime"
+                    options={RUNTIME_OPTIONS}
+                    value={filters.runtimeMax}
+                    onChange={(value) => updateFilter('runtimeMax', value)}
+                />
+            </div>
+        );
+    }
+
+    // Modal mode - full layout with headers
     return (
         <div className={classnames(className, styles['advanced-filters'])}>
             <div className={styles['filters-header']}>
@@ -88,40 +124,34 @@ const AdvancedFilters = ({ className, filters, updateFilter, clearFilters, hasAc
             </div>
 
             <div className={styles['filters-grid']}>
-                <div className={styles['filter-group']}>
-                    <label className={styles['filter-label']}>Year Range</label>
-                    <div className={styles['year-range']}>
-                        <FilterSelect
-                            value={filters.yearFrom}
-                            options={YEAR_OPTIONS}
-                            onChange={(value) => updateFilter('yearFrom', value)}
-                        />
-                        <span className={styles['range-separator']}>to</span>
-                        <FilterSelect
-                            value={filters.yearTo}
-                            options={YEAR_OPTIONS}
-                            onChange={(value) => updateFilter('yearTo', value)}
-                        />
-                    </div>
-                </div>
-
-                <div className={styles['filter-group']}>
-                    <label className={styles['filter-label']}>Minimum Rating</label>
-                    <FilterSelect
-                        value={filters.ratingMin}
-                        options={RATING_OPTIONS}
-                        onChange={(value) => updateFilter('ratingMin', value)}
-                    />
-                </div>
-
-                <div className={styles['filter-group']}>
-                    <label className={styles['filter-label']}>Max Runtime</label>
-                    <FilterSelect
-                        value={filters.runtimeMax}
-                        options={RUNTIME_OPTIONS}
-                        onChange={(value) => updateFilter('runtimeMax', value)}
-                    />
-                </div>
+                <Multiselect
+                    className={styles['modal-multiselect']}
+                    title="Year From"
+                    options={YEAR_OPTIONS}
+                    selected={filters.yearFrom !== null ? [String(filters.yearFrom)] : []}
+                    onSelect={(e) => updateFilter('yearFrom', e.value === '' || e.value === null ? null : Number(e.value))}
+                />
+                <Multiselect
+                    className={styles['modal-multiselect']}
+                    title="Year To"
+                    options={YEAR_OPTIONS}
+                    selected={filters.yearTo !== null ? [String(filters.yearTo)] : []}
+                    onSelect={(e) => updateFilter('yearTo', e.value === '' || e.value === null ? null : Number(e.value))}
+                />
+                <Multiselect
+                    className={styles['modal-multiselect']}
+                    title="Min Rating"
+                    options={RATING_OPTIONS}
+                    selected={filters.ratingMin !== null ? [String(filters.ratingMin)] : []}
+                    onSelect={(e) => updateFilter('ratingMin', e.value === '' || e.value === null ? null : Number(e.value))}
+                />
+                <Multiselect
+                    className={styles['modal-multiselect']}
+                    title="Max Runtime"
+                    options={RUNTIME_OPTIONS}
+                    selected={filters.runtimeMax !== null ? [String(filters.runtimeMax)] : []}
+                    onSelect={(e) => updateFilter('runtimeMax', e.value === '' || e.value === null ? null : Number(e.value))}
+                />
             </div>
         </div>
     );
@@ -138,6 +168,7 @@ AdvancedFilters.propTypes = {
     updateFilter: PropTypes.func.isRequired,
     clearFilters: PropTypes.func.isRequired,
     hasActiveFilters: PropTypes.bool.isRequired,
+    inline: PropTypes.bool,
 };
 
 module.exports = AdvancedFilters;

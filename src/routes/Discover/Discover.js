@@ -36,6 +36,12 @@ const Discover = ({ urlParams, queryParams }) => {
     const metasContainerRef = React.useRef();
     const expandedCardRef = React.useRef(null);
 
+    // Apply client-side filters to catalog content
+    const filteredContent = React.useMemo(() => {
+        if (discover.catalog?.content?.type !== 'Ready') return [];
+        return filterItems(discover.catalog.content.content);
+    }, [discover.catalog, filterItems]);
+
     React.useEffect(() => {
         if (discover.catalog?.content.type === 'Loading') {
             metasContainerRef.current.scrollTop = 0;
@@ -49,12 +55,7 @@ const Discover = ({ urlParams, queryParams }) => {
                 loadNextPage();
             }
         }
-    }, [hasNextPage, loadNextPage]);
-    // Apply client-side filters to catalog content
-    const filteredContent = React.useMemo(() => {
-        if (discover.catalog?.content?.type !== 'Ready') return [];
-        return filterItems(discover.catalog.content.content);
-    }, [discover.catalog, filterItems]);
+    }, [hasNextPage, loadNextPage, filteredContent.length]);
 
     const selectedMetaItem = React.useMemo(() => {
         return filteredContent[selectedMetaItemIndex] || null;
@@ -270,11 +271,20 @@ const Discover = ({ urlParams, queryParams }) => {
                                 onSelect={onSelect}
                             />
                         ))}
+                        <AdvancedFilters
+                            className={styles['inline-advanced-filters']}
+                            filters={filters}
+                            updateFilter={updateFilter}
+                            clearFilters={clearFilters}
+                            hasActiveFilters={hasActiveFilters}
+                            inline={true}
+                        />
                         <div className={styles['filter-container']}>
                             <Button className={classnames(styles['filter-button'], { [styles['has-active-filters']]: hasActiveFilters })} title={t('ALL_FILTERS')} onClick={openInputsModal}>
                                 <Icon className={styles['filter-icon']} name={'filters'} />
+                                <span className={styles['filter-label']}>Filters</span>
                                 {activeFilterCount > 0 && (
-                                    <span className={styles['filter-badge']}>{activeFilterCount}</span>
+                                    <span className={styles['filter-count']}>{activeFilterCount}</span>
                                 )}
                             </Button>
                         </div>
