@@ -154,21 +154,25 @@ const HeroShelf = ({ items }) => {
                                         renderFallback={renderLogoFallback}
                                     />
                                 </div>
-                                <div className={styles['metadata-row']}>
-                                    {imdbRating && (
+                                {(year || runtime) && (
+                                    <div className={styles['year-row']}>
+                                        {year && <div className={styles['year-item']}>{year}</div>}
+                                        {runtime && (
+                                            <>
+                                                <div className={styles['metadata-separator']}>•</div>
+                                                <div className={styles['year-item']}>{runtime}</div>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                                {imdbRating && (
+                                    <div className={styles['rating-row']}>
                                         <div className={styles['badge-imdb']}>
                                             <span className={styles['imdb-label']}>{t('IMDB')}</span>
                                             <span className={styles['imdb-rating']}>{imdbRating}</span>
                                         </div>
-                                    )}
-                                    {year && <div className={styles['metadata-item']}>{year}</div>}
-                                    {runtime && (
-                                        <>
-                                            <div className={styles['metadata-separator']}>•</div>
-                                            <div className={styles['metadata-item']}>{runtime}</div>
-                                        </>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
                                 {description && (
                                     <div className={styles['description']}>
                                         {description}
