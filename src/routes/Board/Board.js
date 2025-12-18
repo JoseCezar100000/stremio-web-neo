@@ -63,6 +63,64 @@ const Board = () => {
     // Fetch meta details for first 10 items to get background and logo
     const { metaDataMap, isLoading: isLoadingMetaDetails } = useMetaDetailsForItems(sourceItems, 10);
 
+    // Identify hero items that are missing background or logo
+    const heroItemsNeedingMetadata = React.useMemo(() => {
+        if (!Array.isArray(heroItems) || heroItems.length === 0) {
+            return [];
+        }
+        return heroItems.filter((item) => {
+            if (!item) return false;
+            const hasBackground = typeof item.background === 'string' && item.background.length > 0;
+            const hasLogo = typeof item.logo === 'string' && item.logo.length > 0;
+            return !hasBackground || !hasLogo;
+        });
+    }, [heroItems]);
+
+    // Fetch meta details for hero items missing background or logo (limit to first 15 items)
+    const { metaDataMap: heroMetaDataMap, isLoading: isLoadingHeroMetaDetails } = useMetaDetailsForItems(heroItemsNeedingMetadata, Math.min(heroItemsNeedingMetadata.length, 15));
+
+    // Enhance hero items with fetched metadata
+    const enhancedHeroItems = React.useMemo(() => {
+        if (!Array.isArray(heroItems) || heroItems.length === 0) {
+            return heroItems;
+        }
+
+        return heroItems.map((item) => {
+            const itemKey = item._id || item.id;
+            const metaData = heroMetaDataMap.get(itemKey) || heroMetaDataMap.get(item._id) || heroMetaDataMap.get(item.id);
+
+            // Helper to get valid string value (non-empty)
+            const getValidString = (...values) => {
+                for (const val of values) {
+                    if (typeof val === 'string' && val.length > 0) {
+                        return val;
+                    }
+                }
+                return undefined;
+            };
+
+            const finalBackground = getValidString(
+                metaData?.background,
+                item.background,
+                item.backdrop,
+                item.fanart,
+                item?.behaviorHints?.background
+            );
+            const finalLogo = getValidString(
+                metaData?.logo,
+                item.logo,
+                item.logo_url,
+                item?.behaviorHints?.logo
+            );
+
+            return {
+                ...item,
+                background: finalBackground,
+                logo: finalLogo
+            };
+        });
+    }, [heroItems, heroMetaDataMap]);
+
     const continueWatchingCatalog = React.useMemo(() => {
         if (!continueWatchingPreview) {
             return continueWatchingPreview;
@@ -112,7 +170,7 @@ const Board = () => {
             <MainNavBars className={styles['board-content-container']} route={'board'}>
                 <div ref={scrollContainerRef} className={styles['board-content']} onScroll={onScroll}>
                     {preferencesResult.heroSectionEnabled && (
-                        <HeroShelf items={heroItems.length > 0 ? heroItems : undefined} />
+                        <HeroShelf items={enhancedHeroItems.length > 0 ? enhancedHeroItems : undefined} isLoading={isLoadingHeroMetaDetails} />
                     )}
                     {
                         (continueWatchingPreview?.items?.length > 0 || (continueWatchingPreview?.content?.content && Array.isArray(continueWatchingPreview.content.content) && continueWatchingPreview.content.content.length > 0)) ?

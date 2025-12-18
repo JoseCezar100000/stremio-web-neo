@@ -106,9 +106,11 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
                                     ReactIs.isValidElementType(itemComponent) ?
                                         items.slice(0, size).map((item, index) => {
                                             const posterShape = item.posterShape || 'poster';
+                                            // Use stable key (item ID) instead of index to prevent unnecessary re-renders
+                                            const itemKey = item._id || item.id || index;
                                             return React.createElement(itemComponent, {
                                                 ...item,
-                                                key: index,
+                                                key: itemKey,
                                                 className: classnames(styles['meta-item'], styles[`poster-shape-${posterShape}`]),
                                                 notifications,
                                             });
