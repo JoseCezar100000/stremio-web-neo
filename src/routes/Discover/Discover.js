@@ -7,11 +7,12 @@ const classnames = require('classnames');
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const { useServices } = require('stremio/services');
 const { CONSTANTS, useBinaryState, useOnScrollToBottom, withCoreSuspender } = require('stremio/common');
-const { AddonDetailsModal, Button, DelayedRenderer, Image, MainNavBars, MetaItem, ModalDialog, MultiselectMenu } = require('stremio/components');
+const { AddonDetailsModal, Button, DelayedRenderer, Image, MainNavBars, MetaItem, MultiselectMenu } = require('stremio/components');
 const useDiscover = require('./useDiscover');
 const useSelectableInputs = require('./useSelectableInputs');
 const useClientFilters = require('./useClientFilters');
 const AdvancedFilters = require('./AdvancedFilters');
+const FiltersModal = require('./FiltersModal');
 const ExpandedMetaCard = require('./ExpandedMetaCard/ExpandedMetaCard');
 const styles = require('./styles');
 
@@ -22,7 +23,7 @@ const Discover = ({ urlParams, queryParams }) => {
     const { core } = useServices();
     const [discover, loadNextPage] = useDiscover(urlParams, queryParams);
     const [selectInputs, hasNextPage] = useSelectableInputs(discover);
-    const { filters, updateFilter, clearFilters, filterItems, hasActiveFilters, activeFilterCount } = useClientFilters();
+    const { filters, setFilters, updateFilter, clearFilters, filterItems, hasActiveFilters, activeFilterCount } = useClientFilters();
     const [inputsModalOpen, openInputsModal, closeInputsModal] = useBinaryState(false);
     const [addonModalOpen, openAddonModal, closeAddonModal] = useBinaryState(false);
     const [selectedMetaItemIndex, setSelectedMetaItemIndex] = React.useState(0);
@@ -372,24 +373,12 @@ const Discover = ({ urlParams, queryParams }) => {
             </div>
             {
                 inputsModalOpen ?
-                    <ModalDialog title={t('CATALOG_FILTERS')} className={styles['selectable-inputs-modal']} onCloseRequest={closeInputsModal}>
-                        {selectInputs.map(({ title, options, value, onSelect }, index) => (
-                            <MultiselectMenu
-                                key={index}
-                                className={styles['select-input']}
-                                title={title}
-                                options={options}
-                                value={value}
-                                onSelect={onSelect}
-                            />
-                        ))}
-                        <AdvancedFilters
-                            filters={filters}
-                            updateFilter={updateFilter}
-                            clearFilters={clearFilters}
-                            hasActiveFilters={hasActiveFilters}
-                        />
-                    </ModalDialog>
+                    <FiltersModal
+                        selectInputs={selectInputs}
+                        filters={filters}
+                        setFilters={setFilters}
+                        onClose={closeInputsModal}
+                    />
                     :
                     null
             }

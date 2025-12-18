@@ -73,20 +73,69 @@ InlineMultiselect.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
-const AdvancedFilters = ({ className, filters, updateFilter, clearFilters, hasActiveFilters, inline }) => {
+const AdvancedFilters = ({ className, filters, setFilters, updateFilter, clearFilters, hasActiveFilters, inline, onClose }) => {
+    // Local state for pending filter changes (modal mode only)
+    const [pendingFilters, setPendingFilters] = React.useState(filters);
+
+    // Reset pending filters when modal opens (filters prop changes)
+    React.useEffect(() => {
+        setPendingFilters(filters);
+    }, [filters]);
+
+    const updatePendingFilter = React.useCallback((key, value) => {
+        setPendingFilters((prev) => ({
+            ...prev,
+            [key]: value,
+        }));
+    }, []);
+
+    const clearPendingFilters = React.useCallback(() => {
+        setPendingFilters({
+            yearFrom: null,
+            yearTo: null,
+            ratingMin: null,
+            runtimeMax: null,
+        });
+    }, []);
+
+    const hasPendingActiveFilters = React.useMemo(() => {
+        return pendingFilters.yearFrom !== null ||
+            pendingFilters.yearTo !== null ||
+            pendingFilters.ratingMin !== null ||
+            pendingFilters.runtimeMax !== null;
+    }, [pendingFilters]);
+
+    const handleApply = React.useCallback(() => {
+        setFilters(pendingFilters);
+        if (onClose) onClose();
+    }, [pendingFilters, setFilters, onClose]);
+
+    const handleClose = React.useCallback(() => {
+        setPendingFilters(filters); // Reset to original
+        if (onClose) onClose();
+    }, [filters, onClose]);
+
     // Inline mode - render filters as Multiselect components in the filter bar
     if (inline) {
+        // Filter year options based on selections
+        const yearFromOptions = filters.yearTo !== null
+            ? YEAR_OPTIONS.filter(opt => opt.value === null || Number(opt.value) <= filters.yearTo)
+            : YEAR_OPTIONS;
+        const yearToOptions = filters.yearFrom !== null
+            ? YEAR_OPTIONS.filter(opt => opt.value === null || Number(opt.value) >= filters.yearFrom)
+            : YEAR_OPTIONS;
+
         return (
             <div className={classnames(className, styles['inline-filters-container'])}>
                 <InlineMultiselect
                     title="Year From"
-                    options={YEAR_OPTIONS}
+                    options={yearFromOptions}
                     value={filters.yearFrom}
                     onChange={(value) => updateFilter('yearFrom', value)}
                 />
                 <InlineMultiselect
                     title="Year To"
-                    options={YEAR_OPTIONS}
+                    options={yearToOptions}
                     value={filters.yearTo}
                     onChange={(value) => updateFilter('yearTo', value)}
                 />
@@ -106,16 +155,16 @@ const AdvancedFilters = ({ className, filters, updateFilter, clearFilters, hasAc
         );
     }
 
-    // Modal mode - full layout with headers
+    // Modal mode - full layout with headers and Apply/Close buttons
     return (
         <div className={classnames(className, styles['advanced-filters'])}>
             <div className={styles['filters-header']}>
                 <span className={styles['section-title']}>Advanced Filters</span>
-                {hasActiveFilters && (
+                {hasPendingActiveFilters && (
                     <Button
                         className={styles['clear-button']}
                         title={'Clear all filters'}
-                        onClick={clearFilters}
+                        onClick={clearPendingFilters}
                     >
                         <Icon className={styles['clear-icon']} name={'close'} />
                         <span>Clear</span>
@@ -128,30 +177,47 @@ const AdvancedFilters = ({ className, filters, updateFilter, clearFilters, hasAc
                     className={styles['modal-multiselect']}
                     title="Year From"
                     options={YEAR_OPTIONS}
-                    selected={filters.yearFrom !== null ? [String(filters.yearFrom)] : []}
-                    onSelect={(e) => updateFilter('yearFrom', e.value === '' || e.value === null ? null : Number(e.value))}
+                    selected={pendingFilters.yearFrom !== null ? [String(pendingFilters.yearFrom)] : []}
+                    onSelect={(e) => updatePendingFilter('yearFrom', e.value === '' || e.value === null ? null : Number(e.value))}
                 />
                 <Multiselect
                     className={styles['modal-multiselect']}
                     title="Year To"
                     options={YEAR_OPTIONS}
-                    selected={filters.yearTo !== null ? [String(filters.yearTo)] : []}
-                    onSelect={(e) => updateFilter('yearTo', e.value === '' || e.value === null ? null : Number(e.value))}
+                    selected={pendingFilters.yearTo !== null ? [String(pendingFilters.yearTo)] : []}
+                    onSelect={(e) => updatePendingFilter('yearTo', e.value === '' || e.value === null ? null : Number(e.value))}
                 />
                 <Multiselect
                     className={styles['modal-multiselect']}
                     title="Min Rating"
                     options={RATING_OPTIONS}
-                    selected={filters.ratingMin !== null ? [String(filters.ratingMin)] : []}
-                    onSelect={(e) => updateFilter('ratingMin', e.value === '' || e.value === null ? null : Number(e.value))}
+                    selected={pendingFilters.ratingMin !== null ? [String(pendingFilters.ratingMin)] : []}
+                    onSelect={(e) => updatePendingFilter('ratingMin', e.value === '' || e.value === null ? null : Number(e.value))}
                 />
                 <Multiselect
                     className={styles['modal-multiselect']}
                     title="Max Runtime"
                     options={RUNTIME_OPTIONS}
-                    selected={filters.runtimeMax !== null ? [String(filters.runtimeMax)] : []}
-                    onSelect={(e) => updateFilter('runtimeMax', e.value === '' || e.value === null ? null : Number(e.value))}
+                    selected={pendingFilters.runtimeMax !== null ? [String(pendingFilters.runtimeMax)] : []}
+                    onSelect={(e) => updatePendingFilter('runtimeMax', e.value === '' || e.value === null ? null : Number(e.value))}
                 />
+            </div>
+
+            <div className={styles['modal-actions']}>
+                <Button
+                    className={styles['cancel-button']}
+                    title={'Cancel'}
+                    onClick={handleClose}
+                >
+                    <span>Cancel</span>
+                </Button>
+                <Button
+                    className={styles['apply-button']}
+                    title={'Apply filters'}
+                    onClick={handleApply}
+                >
+                    <span>Apply</span>
+                </Button>
             </div>
         </div>
     );
@@ -165,10 +231,12 @@ AdvancedFilters.propTypes = {
         ratingMin: PropTypes.number,
         runtimeMax: PropTypes.number,
     }).isRequired,
+    setFilters: PropTypes.func,
     updateFilter: PropTypes.func.isRequired,
     clearFilters: PropTypes.func.isRequired,
     hasActiveFilters: PropTypes.bool.isRequired,
     inline: PropTypes.bool,
+    onClose: PropTypes.func,
 };
 
 module.exports = AdvancedFilters;
