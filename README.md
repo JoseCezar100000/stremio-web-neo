@@ -29,7 +29,7 @@ A fork of Stremio web that aims to add new UI and features without touching the 
 4. **Calendar**: Keep track of upcoming releases and manage your viewing schedule
 5. **More Detailed Movie Description**: Richer metadata (TMDB) and information for every title
 6. **Catalog Management (Finally)**: Only see the lists that matter to you
-7. **Upcoming**: Better mobile UI, more ratings. Open to suggestions.
+7. **Upcoming**: Better mobile UI, more ratings, auto-play. Open to suggestions.
 
 ## Screenshots
 
