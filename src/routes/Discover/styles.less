@@ -499,8 +499,12 @@
                 .select-input {
                     display: none;
 
-                    &:not(:last-child) {
-                        margin-bottom: 0.8rem;
+                    &:nth-child(n+2) {
+                        display: flex;
+
+                        &:not(:last-child) {
+                            margin-bottom: 0.8rem;
+                        }
                     }
                 }
             }
