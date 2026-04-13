@@ -22,3 +22,23 @@
 
 @phone-landscape: ~"screen and (max-width: @{phone-portrait-size}) and (max-height: @{phone-landscape-size}) and (orientation: landscape)";
 @phone-portrait: ~"screen and (max-width: @{phone-landscape-size}) and (max-height: @{phone-portrait-size}) and (orientation: portrait)";
+/* Ajuste Mestre por José Cézar */
+@media (max-width: 1000px) {
+  div[style*="background-image"] {
+    background-size: cover !important;
+    background-position: center 20% !important;
+    height: 60vh !important;
+    width: 100vw !important;
+    left: 0 !important;
+    position: absolute !important;
+    top: 0 !important;
+  }
+  
+  /* Ajusta as informações para não sumirem */
+  div[class*="info"], div[class*="Banner"] {
+    position: relative !important;
+    z-index: 10 !important;
+    margin-top: 25vh !important;
+  }
+}
+
